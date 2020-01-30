@@ -10,9 +10,6 @@ path_dir = r'C:\Users\wtjang\Documents\work\L_MOLD_GAS'
 file_list = os.listdir(path_dir)
 file_list.sort()
 
-result = pd.read_excel(r'C:\Users\wtjang\Documents\work\L_MOLD_result.xlsx')
-
-
 for k in range(0, len(file_list)):
     
 
@@ -23,10 +20,8 @@ for k in range(0, len(file_list)):
     f = open(path_dir +  '\\' +  file_list[k])
     
     lines = f.readlines()
-    labels = lines[11].split() # line 11 : Factor
-    
-    
-    
+    labels = lines[11].split() # line 11 : Factor  
+        
     df = pd.DataFrame(columns = labels)
     
     for i in range(13, len(lines)):
@@ -63,8 +58,14 @@ for k in range(0, len(file_list)):
     df_2 = df_1.loc[df_1['Recipe_Step_Number'] == 6]
      
     #뽑을 Factor들을 이미 정의
-    Gas_Input = ['Time', 'S1_NH3_FLOW','S1_SiH4_FLOW', 'S1_N2_FLOW', 'S1_Ar_Flow(Teos)', 'S1_P0_PRESS', 'S1_P1_PRESS', 'S1_VAT_Pressure', 'S1_VAT_Position' ]   
+    Gas_Input = ['Time', 'S1_NH3_FLOW','S1_SiH4_FLOW', 'S1_N2_FLOW', 'S1_Ar_Flow(Teos)', 
+                 'S1_P0_PRESS', 'S1_P1_PRESS', 'S1_VAT_Pressure', 'S1_VAT_Position','HF_FORWARD_A','HF_REFLECT_A']   
     df_3 = df_2[Gas_Input]
+    
+    df_3['Delivery_Power'] = df_3['HF_FORWARD_A'] - df_3['HF_REFLECT_A']
+    
+    del df_3['HF_FORWARD_A']
+    del df_3['HF_REFLECT_A']
     
     # Factor들 이름만 가져옴
     answer = df_3.std().index 
@@ -98,8 +99,120 @@ for k in range(0, len(file_list)):
    
    
     
+# Temp 로그 추출
+        
+path_dir = r'C:\Users\wtjang\Documents\work\L_MOLD_TEMP'
+file_list = os.listdir(path_dir)
+file_list.sort()
+
+for k in range(0, len(file_list)):
+    
+# 1. log파일 분할시키기
+
+#f = open(r'C:\Users\wtjang\Documents\work\L_MOLD_GAS\201903080435_754_No_He_SiN__2500.log')
+
+    f = open(path_dir +  '\\' +  file_list[k])
+    
+    lines = f.readlines()
+    labels = lines[11].split() # line 11 : Factor
+          
+    df_temp = pd.DataFrame(columns = labels)
+    
+    for i in range(13, len(lines)):
+        temp = lines[i]
+        temp = temp.split()
+        temp_date = temp[0] + ' ' + temp[1]
+            
+        del temp[0]
+        del temp[0]
+            
+        temp.insert(0, temp_date)
+            
+        df_temp.loc[i-12] = temp
+    
+    df_4 = df_temp.loc[:,'Recipe_Step_Number':(df_temp.iloc[:,-1]).name].apply(pd.to_numeric, errors = 'coerce')
+    
+    #df_1 = df.apply(pd.to_numeric, errors = 'coerce') 
+    #col값을 numeric으로 변경하는데, numerice으로 변경 안되는건 NaN으로 변경
+    #제일 마지막 칼럼 이름을 지정해줘야 하는데 (df.iloc[:,-1]).name 이걸로 인덱싱
+    
+    df_4.Time = pd.to_datetime(df_temp.Time) # 타입 변환
+    df_4['Time'] = pd.DataFrame({'Time' : df_4.Time})
+    
+    #Dataframe에서 col 순서 바꾸기(end col -> first col으로)
+    cols = df_4.columns.tolist()
+    cols = cols[-1:] + cols[:-1]
+    df_4 = df_4[cols]
+    
+    #df_1에서 모든 log 분할 완성 
+    
+    # 2. 특정 Step 값만 가져오기
+    
+    # 6Step만 선택
+    df_5 = df_4.loc[df_4['Recipe_Step_Number'] == 6]
+     
+    #뽑을 Factor들을 이미 정의
+    Temp_Input = ['Time', 'S1_CHUCK_POSITION', 'FORE_BARA_GAUGE','HEAT_EX_TEMP_A' ,'HF_R_A', 'HF_X_A' ]   
+    df_6 = df_5[Temp_Input]
+    
+    # Impedence 계산
+    # df_6['Impedence'] = sqrt(df_6['HF_R_A'] * df_6['HF_R_A'] + df_6['HF_X_A'] * df_6['HF_X_A']) 
+    # sqrt 쓰면 cannot convert the series to <class 'float'> 오류남
+    
+    df_6['Impedence'] = (df_6['HF_R_A'] * df_6['HF_R_A'] + df_6['HF_X_A'] * df_6['HF_X_A']) ** (1/2)
+    
+    del df_6['HF_R_A']
+    del df_6['HF_X_A']
+       
+    
+    # Factor들 이름만 가져옴
+    answer = df_6.std().index 
+    
+    # 통계량 접미사 만들고 통계량 추출
+    answer_mean = answer + '_mean'
+    value_mean = df_6.mean()
+    answer_median = answer + '_median'
+    value_median = df_6.median()
+    answer_std = answer + '_std'
+    value_std = df_6.std()
+    
+    # 1줄로 추출
+    temp_mean = pd.DataFrame(index=range(0,0), columns=[answer_mean])
+    temp_mean.loc[0] = value_mean.values
+    temp_median = pd.DataFrame(index=range(0,0), columns=[answer_median])
+    temp_median.loc[0] = value_median.values
+    temp_std = pd.DataFrame(index=range(0,0), columns=[answer_std])
+    temp_std.loc[0] = value_std.values
+    
+    # log 한개당 한줄로 추출
+    temp_master = pd.concat([temp_mean, temp_median, temp_std], axis = 1)
+
+
+    if k ==0:
+        master_2 = temp_master # 제일 처음에만    
+    # log 50개를 누적해서 50row로 만드는게 목적
+    #조건문으로 들어가게 해줘야함
+    else:
+        master_2 = pd.concat([master_2, temp_master])
+   
+
+# 로그 Table 완성
+
+
+
+
+
+
+
+
+
+
+result = pd.read_excel(r'C:\Users\wtjang\Documents\work\L_MOLD_result.xlsx')
+
+
 # re_index 해주기 -> index 맞추는 작업 필요 
 master = master.reset_index(drop=True)  
+master_2 = master_2.reset_index(drop=True)  
 result = result.reset_index(drop=True)  
 
 # col삭제
@@ -107,24 +220,24 @@ result = result.reset_index(drop=True)
 
 # pd.concat으로 Dataframe 합칠 수 있는데, axis=1이면 col 옆으로 합친다는 뜻
 # 열로 붙일때 index 넘버가 같아야댐.. 그래야지 맞춰지더라 그래서 reset_index 쓴거임
-master = pd.concat([master, result[['D_R','stress']]],axis = 1)
+final_master_D_R = pd.concat([master, master_2, result['D_R']],axis = 1)
 
 
 
 # 3. KNN - Regression 알고리즘 적용
 
 #import required packages
-from sklearn.model_selection import train_test_split
 
+from sklearn.model_selection import train_test_split
 from sklearn import neighbors
 from sklearn.metrics import mean_squared_error 
 from math import sqrt
 import matplotlib.pyplot as plt
-import matplotlib.pyplot as plt 
-%matplotlib inline
+
+
 
 # train_test_split(arrays, test_size, train_size, random_state, shuffle, stratify)
-train_data, test_data = train_test_split(master, test_size = 0.2, random_state = 123)
+train_data, test_data = train_test_split(final_master_D_R, test_size = 0.2, random_state = 123)
 
 # seperate the independent and target variable on training data
 train_x = train_data.drop(columns=['D_R'], axis=1)
@@ -145,11 +258,15 @@ test_x_scaled = scaler.fit_transform(test_x)
 test_x = pd.DataFrame(test_x_scaled)
 
 
+
+# KNN-Regression
+
 rmse_val = []
 
 for K in range(20):
     K = K+1
-    model = KNeighborsRegressor(n_neighbors = K)
+    
+    model = sklearn.neighbors.KNeighborsRegressor(n_neighbors = K)
     
     model.fit(train_x, train_y)
     pred = model.predict(test_x)
@@ -160,6 +277,8 @@ for K in range(20):
 
 curve = pd.DataFrame(rmse_val)
 curve.plot()
+
+
 
 
 
@@ -195,6 +314,61 @@ for x, y in zip(xs, ys_1):
 # plt.title("sin & cos") # 제목
 
 # git test
+
+from matplotlib import pyplot
+from sklearn.model_selection import cross_val_score,KFold
+from sklearn.cross_validation import  train_test_split
+from sklearn.metrics import mean_absolute_error
+import matplotlib.pyplot as plt
+from sklearn.grid_search import GridSearchCV   #Perforing grid search
+from scipy.stats import skew
+from collections import OrderedDict
+import csv as csv
+
+
+# XG-Boosting
+# No module named 'xgboost' 계속 이거나옴 ㅅㅂ
+#anaconda prompt에서 pip install xgboost 
+import xgboost
+from xgboost import plot_importance
+
+# for tuning parameters
+parameters_for_testing = {
+    'colsample_bytree':[0.4,0.6,0.8],
+    'gamma':[0,0.03,0.1,0.3],
+    'min_child_weight':[1.5,6,10],
+    'learning_rate':[0.1,0.07],
+    'max_depth':[3,5],
+    'n_estimators':[10000],
+    'reg_alpha':[1e-5, 1e-2,  0.75],
+    'reg_lambda':[1e-5, 1e-2, 0.45],
+    'subsample':[0.6,0.95]  
+}
+
+
+xgb_model = xgboost.XGBRegressor(learning_rate =0.1, n_estimators=1000, max_depth=5,  min_child_weight=1, gamma=0, subsample=0.8, colsample_bytree=0.8, nthread=6, scale_pos_weight=1, seed=27)
+
+
+gsearch1 = GridSearchCV(estimator = xgb_model, param_grid = parameters_for_testing, n_jobs=1,iid=False, verbose=10,scoring='neg_mean_squared_error')
+
+
+gsearch1.fit(train_x, train_y)
+
+print (gsearch1.grid_scores_)
+print('best params')
+print (gsearch1.best_params_)
+print('best score')
+print (gsearch1.best_score_)
+
+
+
+
+
+
+
+
+
+
 
 
 

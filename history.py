@@ -2910,3 +2910,51 @@ from scipy.stats import skew
 from collections import OrderedDict
 import xgboost
 anaconda search -t conda xgboost
+import xgboost
+import csv as csv
+from xgboost import plot_importance
+from matplotlib import pyplot
+from sklearn.model_selection import cross_val_score,KFold
+from sklearn.cross_validation import  train_test_split
+from sklearn.metrics import mean_absolute_error
+import matplotlib.pyplot as plt
+from sklearn.grid_search import GridSearchCV   #Perforing grid search
+from scipy.stats import skew
+from collections import OrderedDict
+from matplotlib import pyplot
+from sklearn.model_selection import cross_val_score,KFold
+from sklearn.cross_validation import  train_test_split
+from sklearn.metrics import mean_absolute_error
+import matplotlib.pyplot as plt
+from sklearn.grid_search import GridSearchCV   #Perforing grid search
+from scipy.stats import skew
+from collections import OrderedDict
+import csv as csv
+from xgboost import plot_importance
+import xgboost
+from xgboost import plot_importance
+import xgboost
+from xgboost import plot_importance
+import xgboost
+from xgboost import plot_importance
+parameters_for_testing = {
+    'colsample_bytree':[0.4,0.6,0.8],
+    'gamma':[0,0.03,0.1,0.3],
+    'min_child_weight':[1.5,6,10],
+    'learning_rate':[0.1,0.07],
+    'max_depth':[3,5],
+    'n_estimators':[10000],
+    'reg_alpha':[1e-5, 1e-2,  0.75],
+    'reg_lambda':[1e-5, 1e-2, 0.45],
+    'subsample':[0.6,0.95]  
+}
+min_child_weight=1, gamma=0, subsample=0.8, colsample_bytree=0.8, nthread=6, scale_pos_weight=1, seed=27)
+xgb_model = xgboost.XGBRegressor(learning_rate =0.1, n_estimators=1000, 
+subsample=0.8, colsample_bytree=0.8, nthread=6, scale_pos_weight=1, seed=27)
+xgb_model = xgboost.XGBRegressor(learning_rate =0.1, n_estimators=1000, max_depth=5,  min_child_weight=1, gamma=0, subsample=0.8, colsample_bytree=0.8, nthread=6, scale_pos_weight=1, seed=27)
+gsearch1 = GridSearchCV(estimator = xgb_model, param_grid = parameters_for_testing, n_jobs=6,iid=False, verbose=10,scoring='neg_mean_squared_error')
+gsearch1.fit(train_x_scaled,train_y)
+gsearch1.fit(train_x,train_y)
+gsearch1.fit(train_x_scaled,train_y)
+gsearch1 = GridSearchCV(estimator = xgb_model, param_grid = parameters_for_testing, n_jobs=1,iid=False, verbose=10,scoring='neg_mean_squared_error')
+gsearch1.fit(train_x, train_y)
