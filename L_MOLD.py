@@ -134,7 +134,16 @@ test_x = test_data.drop(columns=['D_R'], axis=1)
 test_y = test_data['D_R']
 
 
-# preprocessing 안했음...ㅎ..
+# preprocessing 전처리 한게 더 좋음 RMSE 100감소
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler(feature_range=(0, 1))
+
+train_x_scaled = scaler.fit_transform(train_x)
+train_x = pd.DataFrame(train_x_scaled)
+
+test_x_scaled = scaler.fit_transform(test_x)
+test_x = pd.DataFrame(test_x_scaled)
+
 
 rmse_val = []
 
@@ -154,8 +163,36 @@ curve.plot()
 
 
 
-plt.plot(test_y.values, color='r')
-plt.plot(pred, color='b')
+plt.plot(test_y.values, 'ro-')
+plt.plot(pred, 'bo-')
+
+import numpy as np
+
+xs = np.arange(0,10,1)
+ys = test_y.values
+
+for x, y in zip(xs, ys):
+    label = "{:.2f}".format(y)
+    
+    plt.annotate(label,
+                 (x,y),
+                 textcoords = "offset points",
+                 xytext=(0,20),
+                 ha = 'center',
+                 color = 'r')
+    
+ys_1 = pred
+
+for x, y in zip(xs, ys_1):
+    label = "{:.2f}".format(y)
+    
+    plt.annotate(label,
+                 (x,y),
+                 textcoords = "offset points",
+                 xytext=(0,20),
+                 ha = 'center',
+                 color = 'b')    
+# plt.title("sin & cos") # 제목
 
 # git test
 
