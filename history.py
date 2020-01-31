@@ -2958,3 +2958,124 @@ gsearch1.fit(train_x,train_y)
 gsearch1.fit(train_x_scaled,train_y)
 gsearch1 = GridSearchCV(estimator = xgb_model, param_grid = parameters_for_testing, n_jobs=1,iid=False, verbose=10,scoring='neg_mean_squared_error')
 gsearch1.fit(train_x, train_y)
+print (gsearch1.grid_scores_)
+print('best params')
+print (gsearch1.best_params_)
+print('best score')
+print (gsearch1.best_score_)
+seed = 42)
+best_xgb_model = xgboost.XGBRegressor(colsample_bytree = 0.8,
+                                      gamma = 0.3,
+                                      learning_rate = 0.1,
+                                      max_depth =3,
+                                      min_child_wright = 1.5,
+                                      n_estimators = 10000,
+                                      reg_alpha = 0.75,
+                                      reg_lambda = 0.45,
+                                      subsample = 0.6,
+                                      seed = 42)
+best_xgb_model.fit(train_x, train_y)
+best_xgb_model.predict(test_x)
+test_y
+xgb_result = best_xgb_model.fit(train_x, train_y)
+xgb_result
+xgb_result = best_xgb_model.predict(test_x)
+xgb_result
+plt.plot(test_y.values, 'ro-')
+plt.plot(xgb_result, 'bo-')
+
+import numpy as np
+
+xs = np.arange(0,10,1)
+ys = test_y.values
+
+for x, y in zip(xs, ys):
+    label = "{:.2f}".format(y)
+    
+    plt.annotate(label,
+                 (x,y),
+                 textcoords = "offset points",
+                 xytext=(0,20),
+                 ha = 'center',
+                 color = 'r')
+
+
+ys_1 = xgb_result
+
+for x, y in zip(xs, ys_1):
+    label = "{:.2f}".format(y)
+    
+    plt.annotate(label,
+                 (x,y),
+                 textcoords = "offset points",
+                 xytext=(0,20),
+                 ha = 'center',
+                 color = 'b')  
+
+gsearch1 = GridSearchCV(estimator = xgb_model, param_grid = parameters_for_testing, n_jobs=2,iid=False, verbose=10,scoring='neg_mean_squared_error')
+gsearch1.fit(train_x, train_y)
+gsearch1 = GridSearchCV(estimator = xgb_model, param_grid = parameters_for_testing, n_jobs=20,iid=False, verbose=10,scoring='neg_mean_squared_error')
+gsearch1.fit(train_x, train_y)
+if _name_ == '_main_':
+    xgb_model = xgboost.XGBRegressor(learning_rate =0.1, n_estimators=1000, max_depth=5,  min_child_weight=1, gamma=0, subsample=0.8, colsample_bytree=0.8, nthread=6, scale_pos_weight=1, seed=27)
+    gsearch1 = GridSearchCV(estimator = xgb_model, param_grid = parameters_for_testing, n_jobs=10,iid=False, verbose=10,scoring='neg_mean_squared_error')
+    gsearch1.fit(train_x, train_y)
+
+if __name__=='__main__':
+    xgb_model = xgboost.XGBRegressor(learning_rate =0.1, n_estimators=1000, max_depth=5,  min_child_weight=1, gamma=0, subsample=0.8, colsample_bytree=0.8, nthread=6, scale_pos_weight=1, seed=27)
+    gsearch1 = GridSearchCV(estimator = xgb_model, param_grid = parameters_for_testing, n_jobs=10,iid=False, verbose=10,scoring='neg_mean_squared_error')
+    gsearch1.fit(train_x, train_y)
+
+if __name__ == '__main__'
+    xgb_model = xgboost.XGBRegressor(learning_rate =0.1, n_estimators=1000, max_depth=5,  min_child_weight=1, gamma=0, subsample=0.8, colsample_bytree=0.8, nthread=6, scale_pos_weight=1, seed=27)
+    gsearch1 = GridSearchCV(estimator = xgb_model, param_grid = parameters_for_testing, n_jobs=10,iid=False, verbose=10,scoring='neg_mean_squared_error')
+    gsearch1.fit(train_x, train_y)
+
+if __name__ == '__main__':
+    xgb_model = xgboost.XGBRegressor(learning_rate =0.1, n_estimators=1000, max_depth=5,  min_child_weight=1, gamma=0, subsample=0.8, colsample_bytree=0.8, nthread=6, scale_pos_weight=1, seed=27)
+    gsearch1 = GridSearchCV(estimator = xgb_model, param_grid = parameters_for_testing, n_jobs=10,iid=False, verbose=10,scoring='neg_mean_squared_error')
+    gsearch1.fit(train_x, train_y)
+
+if __name__ == '__main__':
+    xgb_model = xgboost.XGBRegressor(learning_rate =0.1, n_estimators=1000, max_depth=5,  min_child_weight=1, gamma=0, subsample=0.8, colsample_bytree=0.8, nthread=6, scale_pos_weight=1, seed=27)
+    gsearch1 = GridSearchCV(estimator = xgb_model, param_grid = parameters_for_testing, n_jobs=5,iid=False, verbose=10,scoring='neg_mean_squared_error')
+    gsearch1.fit(train_x, train_y)
+
+if __name__ == '__main__':
+    xgb_model = xgboost.XGBRegressor(learning_rate =0.1, n_estimators=1000, max_depth=5,  min_child_weight=1, gamma=0, subsample=0.8, colsample_bytree=0.8, nthread=6, scale_pos_weight=1, seed=27)
+    gsearch1 = GridSearchCV(estimator = xgb_model, param_grid = parameters_for_testing, n_jobs=-1,iid=False, verbose=10,scoring='neg_mean_squared_error')
+    gsearch1.fit(train_x, train_y)
+
+xgb_model = xgboost.XGBRegressor(learning_rate =0.1, n_estimators=1000, max_depth=5,  min_child_weight=1, gamma=0, subsample=0.8, colsample_bytree=0.8, nthread=6, scale_pos_weight=1, seed=27)
+gsearch1 = GridSearchCV(estimator = xgb_model, param_grid = parameters_for_testing, n_jobs=-1,iid=False, verbose=10,scoring='neg_mean_squared_error')
+gsearch1.fit(train_x, train_y)
+from joblib import Parallel, delayed
+import multiprocessing
+xgb_model = xgboost.XGBRegressor(learning_rate =0.1, n_estimators=1000, max_depth=5,  min_child_weight=1, gamma=0, subsample=0.8, colsample_bytree=0.8, nthread=6, scale_pos_weight=1, seed=27)
+gsearch1 = GridSearchCV(estimator = xgb_model, param_grid = parameters_for_testing, n_jobs=10,iid=False, verbose=10,scoring='neg_mean_squared_error')
+gsearch1.fit(train_x, train_y)
+from joblib import Parallel, delayed
+if __name__ == '__main__':
+    xgb_model = xgboost.XGBRegressor(learning_rate =0.1, n_estimators=1000, max_depth=5,  min_child_weight=1, gamma=0, subsample=0.8, colsample_bytree=0.8, nthread=6, scale_pos_weight=1, seed=27)
+    gsearch1 = GridSearchCV(estimator = xgb_model, param_grid = parameters_for_testing, n_jobs=10,iid=False, verbose=10,scoring='neg_mean_squared_error')
+    gsearch1.fit(train_x, train_y)
+
+import multiprocessing
+from joblib import Parallel, delayed
+import joblib
+from joblib import Parallel, delayed
+import multiprocessing
+from joblib import Parallel, delayed
+import multiprocessing
+if __name__ == '__main__':
+    xgb_model = xgboost.XGBRegressor(learning_rate =0.1, n_estimators=1000, max_depth=5,  min_child_weight=1, gamma=0, subsample=0.8, colsample_bytree=0.8, nthread=6, scale_pos_weight=1, seed=27)
+    gsearch1 = GridSearchCV(estimator = xgb_model, param_grid = parameters_for_testing, n_jobs=10,iid=False, verbose=10,scoring='neg_mean_squared_error')
+    gsearch1.fit(train_x, train_y)
+
+xgb_model = xgboost.XGBRegressor(learning_rate =0.1, n_estimators=1000, max_depth=5,  min_child_weight=1, gamma=0, subsample=0.8, colsample_bytree=0.8, nthread=6, scale_pos_weight=1, seed=27)
+gsearch1 = GridSearchCV(estimator = xgb_model, param_grid = parameters_for_testing, n_jobs=10,iid=False, verbose=10,scoring='neg_mean_squared_error')
+gsearch1.fit(train_x, train_y)
+rmse_val
+curve
+curve.type()
+curve.type
