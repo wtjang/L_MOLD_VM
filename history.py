@@ -3079,3 +3079,667 @@ rmse_val
 curve
 curve.type()
 curve.type
+plt.plot(test_y.values, 'ro-')
+plt.plot(xgb_result, 'bo-')
+
+import numpy as np
+
+xs = np.arange(0,10,1)
+ys = test_y.values
+
+for x, y in zip(xs, ys):
+    label = "{:.2f}".format(y)
+    
+    plt.annotate(label,
+                 (x,y),
+                 textcoords = "offset points",
+                 xytext=(0,20),
+                 ha = 'center',
+                 color = 'r')
+
+
+ys_1 = xgb_result
+
+for x, y in zip(xs, ys_1):
+    label = "{:.2f}".format(y)
+    
+    plt.annotate(label,
+                 (x,y),
+                 textcoords = "offset points",
+                 xytext=(0,20),
+                 ha = 'center',
+                 color = 'b')  
+
+
+## ---(Mon Feb  3 14:23:15 2020)---
+runfile('C:/Users/wtjang/.spyder-py3/test.py', wdir='C:/Users/wtjang/.spyder-py3')
+1+1
+runfile('C:/Users/wtjang/.spyder-py3/test.py', wdir='C:/Users/wtjang/.spyder-py3')
+runfile('C:/Users/wtjang/.spyder-py3/test_ex.py', wdir='C:/Users/wtjang/.spyder-py3')
+python example.py
+runfile('C:/Users/wtjang/.spyder-py3/test_ex.py', wdir='C:/Users/wtjang/.spyder-py3')
+from wafer_map import wm_app
+import wm_app
+%clear
+import wm_app
+pip list
+import wafer_map
+data = [(1,1, 20), 
+data = [(1,1, 20), (3,3,10)]
+wafer_map.wm_app.WaferMapApp(data)
+wafer_map.wm_app.WaferMapApp(data,10,(0,0), 150,2,2)
+wm_app.WaferMapApp(data,10,(0,0), 150,2,2)
+import wm_app
+import numpy
+import colour
+import wm_app
+import wafer_map
+import wafer_map.wm_app
+wm_app.WaferMapApp(data,10,(0,0), 150,2,2)
+import wm)app
+import wm_app
+from wafer_map import wm_app
+data = [(1,1, 20), (3,3,10)]
+wm_app.WaferMapApp(data,10,(0,0), 150,2,2)
+wm_app.WaferMapApp(data)
+wm_app.WaferMapApp(data, (1,1))
+(-67.1751,	67.1751,	2014.9639),
+data = [(0,0, 1969.493), 
+        (0,95,2014.453),
+        (-67.1751,	67.1751,	2014.9639),
+        (-95,	0,	2015.6959),
+        (-67.1751,	-67.1751,	2014.524),
+        (0	,-95,	2014.9785),
+        (67.1751,	-67.1751,	2041.684),
+        (95,	0,	2043.2437),
+        (67.1751,	67.1751,2041.6567)
+        ]
+%clear
+from wafer_map import wm_app
+data = [(0,0, 1969.493), 
+        (0,95,2014.453),
+        (-67.1751,	67.1751,	2014.9639),
+        (-95,	0,	2015.6959),
+        (-67.1751,	-67.1751,	2014.524),
+        (0	,-95,	2014.9785),
+        (67.1751,	-67.1751,	2041.684),
+        (95,	0,	2043.2437),
+        (67.1751,	67.1751,2041.6567)
+        ]
+wm_app.WaferMapApp(data, (1,1))
+wm_app.WaferMapApp(data, (150,150))
+wm_app.WaferMapApp(data, (150,150),(0,0),150)
+data = [(0,0, 1969.493), 
+        (0,95,2014.453),
+        (-67.1751,	67.1751,	1000),
+        (-95,	0,	2015.6959),
+        (-67.1751,	-67.1751,	2014.524),
+        (0	,-95,	2014.9785),
+        (67.1751,	-67.1751,	2041.684),
+        (95,	0,	2043.2437),
+        (67.1751,	67.1751,2041.6567)
+        ]
+rMapApp(data, (150,150),(0,0),150)
+data = [(0,0, 1969.493), 
+        (0,95,2014.453),
+        (-67.1751,	67.1751,	1000),
+        (-95,	0,	2015.6959),
+        (-67.1751,	-67.1751,	2014.524),
+        (0	,-95,	2014.9785),
+        (67.1751,	-67.1751,	2041.684),
+        (95,	0,	2043.2437),
+        (67.1751,	67.1751,2041.6567)
+        ]
+wm_app.WaferMapApp(data, (150,150),(0,0),150)
+wm_app.WaferMapApp(data, (20,20),(0,0),150)
+wm_app.WaferMapApp(data, (1,1),(0,0),150)
+wm_app.WaferMapApp(data, (1,1),(0,0),100)
+wm_app.WaferMapApp(data, (1,1),(0,0),150)
+
+## ---(Wed Feb  5 16:35:33 2020)---
+import os
+import pandas as pd
+
+path_dir = r'C:\Users\wtjang\Documents\work\L_MOLD_GAS'
+file_list = os.listdir(path_dir)
+file_list.sort()
+
+for k in range(0, len(file_list)):    
+
+
+# log파일 분할시키기
+    
+    f = open(path_dir +  '\\' +  file_list[k])
+    
+    lines = f.readlines()
+    labels = lines[11].split() # line 11 : Factor  
+    
+    df = pd.DataFrame(columns = labels)
+    
+    for i in range(13, len(lines)):
+        temp = lines[i]
+        temp = temp.split()
+        temp_date = temp[0] + ' ' + temp[1]
+        
+        del temp[0]
+        del temp[0]
+        
+        temp.insert(0, temp_date)
+        
+        df.loc[i-12] = temp
+    
+    df_1 = df.loc[:,'Recipe_Step_Number':(df.iloc[:,-1]).name].apply(pd.to_numeric, errors = 'coerce')
+    #Step부터 end col factor까지 numeric으로 타입 
+    #df_1 = df.apply(pd.to_numeric, errors = 'coerce') 
+    #col값을 numeric으로 변경하는데, numerice으로 변경 안되는건 NaN으로 변경
+    #제일 마지막 칼럼 이름을 지정해줘야 하는데 (df.iloc[:,-1]).name 이걸로 인덱싱
+    
+    df_1.Time = pd.to_datetime(df.Time) # 타입 변환
+    df_1['Time'] = pd.DataFrame({'Time' : df_1.Time})
+    
+    #Dataframe에서 col 순서 바꾸기(end col -> first col으로)
+    cols = df_1.columns.tolist()
+    cols = cols[-1:] + cols[:-1]
+    df_1 = df_1[cols]
+    
+    #df_1에서 모든 log 분할 완성 
+    
+    # 특정 Step 값만 가져오기
+    
+    # 6Step만 선택 - Depo Step
+    df_2 = df_1.loc[df_1['Recipe_Step_Number'] == 6]
+    
+    #뽑을 Factor들을 사전 정의 - based on domain knowledge
+    #Gas_Input = ['Time', 'S1_NH3_FLOW','S1_SiH4_FLOW', 'S1_N2_FLOW', 'S1_Ar_Flow(Teos)', 
+    #             'S1_P0_PRESS', 'S1_P1_PRESS', 'S1_VAT_Pressure', 'S1_VAT_Position','HF_FORWARD_A','HF_REFLECT_A']  
+    
+    Gas_Input = ['Time', 'S1_NH3_FLOW','S1_SiH4_FLOW', 'S1_N2_FLOW', 'S1_Ar_Flow(Teos)', 
+                  'S1_VAT_Pressure', 'HF_FORWARD_A','HF_REFLECT_A']   
+    df_3 = df_2[Gas_Input]
+    
+    df_3['Delivery_Power'] = df_3['HF_FORWARD_A'] - df_3['HF_REFLECT_A']
+    
+    del df_3['HF_FORWARD_A']
+    del df_3['HF_REFLECT_A']
+    
+    # Factor들 이름만 가져옴
+    answer = df_3.std().index 
+    
+    # 통계량 접미사 만들고 통계량 추출
+    answer_mean = answer + '_mean'
+    value_mean = df_3.mean()
+    answer_median = answer + '_median'
+    value_median = df_3.median()
+    answer_std = answer + '_std'
+    value_std = df_3.std()
+    
+    # 1줄로 추출
+    temp_mean = pd.DataFrame(index=range(0,0), columns=[answer_mean])
+    temp_mean.loc[0] = value_mean.values
+    temp_median = pd.DataFrame(index=range(0,0), columns=[answer_median])
+    temp_median.loc[0] = value_median.values
+    temp_std = pd.DataFrame(index=range(0,0), columns=[answer_std])
+    temp_std.loc[0] = value_std.values
+    
+    # log 한개당 한줄로 추출
+    temp_master = pd.concat([temp_mean, temp_median, temp_std], axis = 1)
+    
+    
+    if k ==0:
+        master = temp_master # 제일 처음에만    
+    # log 50개를 누적해서 50row로 만드는게 목적
+    #조건문으로 들어가게 해줘야함
+    else:
+        master = pd.concat([master, temp_master])
+
+
+# Temp 추출
+
+path_dir = r'C:\Users\wtjang\Documents\work\L_MOLD_TEMP'
+file_list = os.listdir(path_dir)
+file_list.sort()
+
+for k in range(0, len(file_list)):
+    
+    f = open(path_dir +  '\\' +  file_list[k])
+    
+    lines = f.readlines()
+    labels = lines[11].split() # line 11 : Factor
+    
+    df_temp = pd.DataFrame(columns = labels)
+    
+    for i in range(13, len(lines)):
+        temp = lines[i]
+        temp = temp.split()
+        temp_date = temp[0] + ' ' + temp[1]
+        
+        del temp[0]
+        del temp[0]
+        
+        temp.insert(0, temp_date)
+        
+        df_temp.loc[i-12] = temp
+    
+    df_4 = df_temp.loc[:,'Recipe_Step_Number':(df_temp.iloc[:,-1]).name].apply(pd.to_numeric, errors = 'coerce')
+    df_4.Time = pd.to_datetime(df_temp.Time) # 타입 변환
+    df_4['Time'] = pd.DataFrame({'Time' : df_4.Time})
+    
+    cols = df_4.columns.tolist()
+    cols = cols[-1:] + cols[:-1]
+    df_4 = df_4[cols]
+    
+    # 6Step만 선택
+    df_5 = df_4.loc[df_4['Recipe_Step_Number'] == 6]
+    
+    #뽑을 Factor들을 사전 정의
+    #Temp_Input = ['Time', 'S1_CHUCK_POSITION', 'FORE_BARA_GAUGE','HEAT_EX_TEMP_A' ,'HF_R_A', 'HF_X_A' ]   
+    Temp_Input = ['Time', 'S1_CHUCK_POSITION', 'HF_R_A', 'HF_X_A' ]   
+    df_6 = df_5[Temp_Input]
+    
+    # Impedence 계산
+    # df_6['Impedence'] = sqrt(df_6['HF_R_A'] * df_6['HF_R_A'] + df_6['HF_X_A'] * df_6['HF_X_A']) 
+    # sqrt 쓰면 cannot convert the series to <class 'float'> 오류남
+    
+    df_6['Impedence'] = (df_6['HF_R_A'] * df_6['HF_R_A'] + df_6['HF_X_A'] * df_6['HF_X_A']) ** (1/2)
+    
+    del df_6['HF_R_A']
+    del df_6['HF_X_A']
+    
+    # Factor들 이름만 가져옴
+    answer = df_6.std().index 
+    
+    # 통계량 접미사 만들고 통계량 추출
+    answer_mean = answer + '_mean'
+    value_mean = df_6.mean()
+    answer_median = answer + '_median'
+    value_median = df_6.median()
+    answer_std = answer + '_std'
+    value_std = df_6.std()
+    
+    # 1줄로 추출
+    temp_mean = pd.DataFrame(index=range(0,0), columns=[answer_mean])
+    temp_mean.loc[0] = value_mean.values
+    temp_median = pd.DataFrame(index=range(0,0), columns=[answer_median])
+    temp_median.loc[0] = value_median.values
+    temp_std = pd.DataFrame(index=range(0,0), columns=[answer_std])
+    temp_std.loc[0] = value_std.values
+    
+    # log 한개당 한줄로 추출
+    temp_master = pd.concat([temp_mean, temp_median, temp_std], axis = 1)
+    
+    if k ==0:
+        master_2 = temp_master # 제일 처음에만    
+    # log 50개를 누적해서 50row로 만드는게 목적
+    #조건문으로 들어가게 해줘야함
+    else:
+        master_2 = pd.concat([master_2, temp_master])
+
+result = pd.read_excel(r'C:\Users\wtjang\Documents\work\L_MOLD_result.xlsx')
+master = master.reset_index(drop=True)   # Gas
+master_2 = master_2.reset_index(drop=True) # Temp 
+result = result.reset_index(drop=True)  # Result
+final_master_D_R = pd.concat([master, master_2, result['D_R']],axis = 1)
+from sklearn.model_selection import train_test_split
+from sklearn import neighbors
+from sklearn.metrics import mean_squared_error 
+from math import sqrt
+import matplotlib.pyplot as plt
+
+# train_test_split(arrays, test_size, train_size, random_state, shuffle, stratify)
+train_data, test_data = train_test_split(final_master_D_R, test_size = 0.2, random_state = 123)
+
+# seperate the independent and target variable on training data
+train_x = train_data.drop(columns=['D_R'], axis=1)
+train_y = train_data['D_R']
+
+test_x = test_data.drop(columns=['D_R'], axis=1)
+test_y = test_data['D_R']
+
+# Preprocessing 전처리 한게 더 오차율 좋음 RMSE 100감소
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler(feature_range=(0, 1))
+
+train_x_scaled = scaler.fit_transform(train_x)
+train_x = pd.DataFrame(train_x_scaled)
+
+test_x_scaled = scaler.fit_transform(test_x)
+test_x = pd.DataFrame(test_x_scaled)
+rmse_val = []
+
+for K in range(20):
+    K = K+1
+    
+    model = sklearn.neighbors.KNeighborsRegressor(n_neighbors = K)
+    
+    model.fit(train_x, train_y)
+    pred = model.predict(test_x)
+    error = sqrt(mean_squared_error(test_y, pred))
+    rmse_val.append(error)
+    print('RMSE value for k = ' , K , 'is:', error)
+
+rmse_val = []
+for K in range(20):
+    K = K+1
+    
+    model = sklearn.neighbors.KNeighborsRegressor(n_neighbors = K)
+    
+    model.fit(train_x, train_y)
+    pred = model.predict(test_x)
+    error = sqrt(mean_squared_error(test_y, pred))
+    rmse_val.append(error)
+    print('RMSE value for k = ' , K , 'is:', error)
+
+for K in range(20):
+    K = K+1
+    
+    model = neighbors.KNeighborsRegressor(n_neighbors = K)
+    
+    model.fit(train_x, train_y)
+    pred = model.predict(test_x)
+    error = sqrt(mean_squared_error(test_y, pred))
+    rmse_val.append(error)
+    print('RMSE value for k = ' , K , 'is:', error)
+
+curve = pd.DataFrame(rmse_val)
+curve.plot() # k에 따른 rmse 곡선
+plt.plot(test_y.values, 'ro-')
+plt.plot(pred, 'bo-')
+
+import numpy as np
+xs = np.arange(0,10,1)
+ys = test_y.values
+
+for x, y in zip(xs, ys):
+    label = "{:.2f}".format(y)
+    
+    plt.annotate(label,
+                 (x,y),
+                 textcoords = "offset points",
+                 xytext=(0,20),
+                 ha = 'center',
+                 color = 'r')
+
+
+ys_1 = pred
+
+for x, y in zip(xs, ys_1):
+    label = "{:.2f}".format(y)
+    
+    plt.annotate(label,
+                 (x,y),
+                 textcoords = "offset points",
+                 xytext=(0,20),
+                 ha = 'center',
+                 color = 'b')  
+
+K
+K=4
+model = neighbors.KNeighborsRegressor(n_neighbors = K)
+model.fit(train_x, train_y)
+pred = model.predict(test_x)
+error = sqrt(mean_squared_error(test_y, pred))
+error
+plt.plot(test_y.values, 'ro-')
+plt.plot(pred, 'bo-')
+plt.plot(test_y.values, 'ro-')
+plt.plot(pred, 'bo-')
+
+import numpy as np
+xs = np.arange(0,10,1)
+ys = test_y.values
+
+for x, y in zip(xs, ys):
+    label = "{:.2f}".format(y)
+    
+    plt.annotate(label,
+                 (x,y),
+                 textcoords = "offset points",
+                 xytext=(0,20),
+                 ha = 'center',
+                 color = 'r')
+
+
+ys_1 = pred
+
+for x, y in zip(xs, ys_1):
+    label = "{:.2f}".format(y)
+    
+    plt.annotate(label,
+                 (x,y),
+                 textcoords = "offset points",
+                 xytext=(0,20),
+                 ha = 'center',
+                 color = 'b')    
+
+rmse_val
+import os
+import pandas as pd
+
+path_dir = r'C:\Users\wtjang\Documents\work\L_MOLD_GAS'
+file_list = os.listdir(path_dir)
+file_list.sort()
+
+for k in range(0, len(file_list)):    
+
+
+# log파일 분할시키기
+    
+    f = open(path_dir +  '\\' +  file_list[k])
+    
+    lines = f.readlines()
+    labels = lines[11].split() # line 11 : Factor  
+    
+    df = pd.DataFrame(columns = labels)
+    
+    for i in range(13, len(lines)):
+        temp = lines[i]
+        temp = temp.split()
+        temp_date = temp[0] + ' ' + temp[1]
+        
+        del temp[0]
+        del temp[0]
+        
+        temp.insert(0, temp_date)
+        
+        df.loc[i-12] = temp
+    
+    df_1 = df.loc[:,'Recipe_Step_Number':(df.iloc[:,-1]).name].apply(pd.to_numeric, errors = 'coerce')
+    #Step부터 end col factor까지 numeric으로 타입 
+    #df_1 = df.apply(pd.to_numeric, errors = 'coerce') 
+    #col값을 numeric으로 변경하는데, numerice으로 변경 안되는건 NaN으로 변경
+    #제일 마지막 칼럼 이름을 지정해줘야 하는데 (df.iloc[:,-1]).name 이걸로 인덱싱
+    
+    df_1.Time = pd.to_datetime(df.Time) # 타입 변환
+    df_1['Time'] = pd.DataFrame({'Time' : df_1.Time})
+    
+    #Dataframe에서 col 순서 바꾸기(end col -> first col으로)
+    cols = df_1.columns.tolist()
+    cols = cols[-1:] + cols[:-1]
+    df_1 = df_1[cols]
+    
+    #df_1에서 모든 log 분할 완성 
+    
+    # 특정 Step 값만 가져오기
+    
+    # 6Step만 선택 - Depo Step
+    df_2 = df_1.loc[df_1['Recipe_Step_Number'] == 6]
+    
+    #뽑을 Factor들을 사전 정의 - based on domain knowledge
+    Gas_Input = ['Time', 'S1_NH3_FLOW','S1_SiH4_FLOW', 'S1_N2_FLOW', 'S1_Ar_Flow(Teos)', 
+                 'S1_P0_PRESS', 'S1_P1_PRESS', 'S1_VAT_Pressure', 'S1_VAT_Position','HF_FORWARD_A','HF_REFLECT_A']  
+    
+    #Gas_Input = ['Time', 'S1_NH3_FLOW','S1_SiH4_FLOW', 'S1_N2_FLOW', 'S1_Ar_Flow(Teos)', 
+    #              'S1_VAT_Pressure', 'HF_FORWARD_A','HF_REFLECT_A']   
+    df_3 = df_2[Gas_Input]
+    
+    df_3['Delivery_Power'] = df_3['HF_FORWARD_A'] - df_3['HF_REFLECT_A']
+    
+    del df_3['HF_FORWARD_A']
+    del df_3['HF_REFLECT_A']
+    
+    # Factor들 이름만 가져옴
+    answer = df_3.std().index 
+    
+    # 통계량 접미사 만들고 통계량 추출
+    answer_mean = answer + '_mean'
+    value_mean = df_3.mean()
+    answer_median = answer + '_median'
+    value_median = df_3.median()
+    answer_std = answer + '_std'
+    value_std = df_3.std()
+    
+    # 1줄로 추출
+    temp_mean = pd.DataFrame(index=range(0,0), columns=[answer_mean])
+    temp_mean.loc[0] = value_mean.values
+    temp_median = pd.DataFrame(index=range(0,0), columns=[answer_median])
+    temp_median.loc[0] = value_median.values
+    temp_std = pd.DataFrame(index=range(0,0), columns=[answer_std])
+    temp_std.loc[0] = value_std.values
+    
+    # log 한개당 한줄로 추출
+    temp_master = pd.concat([temp_mean, temp_median, temp_std], axis = 1)
+    
+    
+    if k ==0:
+        master = temp_master # 제일 처음에만    
+    # log 50개를 누적해서 50row로 만드는게 목적
+    #조건문으로 들어가게 해줘야함
+    else:
+        master = pd.concat([master, temp_master])
+
+
+# Temp 추출
+
+path_dir = r'C:\Users\wtjang\Documents\work\L_MOLD_TEMP'
+file_list = os.listdir(path_dir)
+file_list.sort()
+
+for k in range(0, len(file_list)):
+    
+    f = open(path_dir +  '\\' +  file_list[k])
+    
+    lines = f.readlines()
+    labels = lines[11].split() # line 11 : Factor
+    
+    df_temp = pd.DataFrame(columns = labels)
+    
+    for i in range(13, len(lines)):
+        temp = lines[i]
+        temp = temp.split()
+        temp_date = temp[0] + ' ' + temp[1]
+        
+        del temp[0]
+        del temp[0]
+        
+        temp.insert(0, temp_date)
+        
+        df_temp.loc[i-12] = temp
+    
+    df_4 = df_temp.loc[:,'Recipe_Step_Number':(df_temp.iloc[:,-1]).name].apply(pd.to_numeric, errors = 'coerce')
+    df_4.Time = pd.to_datetime(df_temp.Time) # 타입 변환
+    df_4['Time'] = pd.DataFrame({'Time' : df_4.Time})
+    
+    cols = df_4.columns.tolist()
+    cols = cols[-1:] + cols[:-1]
+    df_4 = df_4[cols]
+    
+    # 6Step만 선택
+    df_5 = df_4.loc[df_4['Recipe_Step_Number'] == 6]
+    
+    #뽑을 Factor들을 사전 정의
+    Temp_Input = ['Time', 'S1_CHUCK_POSITION', 'FORE_BARA_GAUGE','HEAT_EX_TEMP_A' ,'HF_R_A', 'HF_X_A' ]   
+    #Temp_Input = ['Time', 'S1_CHUCK_POSITION', 'HF_R_A', 'HF_X_A' ]   
+    df_6 = df_5[Temp_Input]
+    
+    # Impedence 계산
+    # df_6['Impedence'] = sqrt(df_6['HF_R_A'] * df_6['HF_R_A'] + df_6['HF_X_A'] * df_6['HF_X_A']) 
+    # sqrt 쓰면 cannot convert the series to <class 'float'> 오류남
+    
+    df_6['Impedence'] = (df_6['HF_R_A'] * df_6['HF_R_A'] + df_6['HF_X_A'] * df_6['HF_X_A']) ** (1/2)
+    
+    del df_6['HF_R_A']
+    del df_6['HF_X_A']
+    
+    # Factor들 이름만 가져옴
+    answer = df_6.std().index 
+    
+    # 통계량 접미사 만들고 통계량 추출
+    answer_mean = answer + '_mean'
+    value_mean = df_6.mean()
+    answer_median = answer + '_median'
+    value_median = df_6.median()
+    answer_std = answer + '_std'
+    value_std = df_6.std()
+    
+    # 1줄로 추출
+    temp_mean = pd.DataFrame(index=range(0,0), columns=[answer_mean])
+    temp_mean.loc[0] = value_mean.values
+    temp_median = pd.DataFrame(index=range(0,0), columns=[answer_median])
+    temp_median.loc[0] = value_median.values
+    temp_std = pd.DataFrame(index=range(0,0), columns=[answer_std])
+    temp_std.loc[0] = value_std.values
+    
+    # log 한개당 한줄로 추출
+    temp_master = pd.concat([temp_mean, temp_median, temp_std], axis = 1)
+    
+    if k ==0:
+        master_2 = temp_master # 제일 처음에만    
+    # log 50개를 누적해서 50row로 만드는게 목적
+    #조건문으로 들어가게 해줘야함
+    else:
+        master_2 = pd.concat([master_2, temp_master])
+
+
+## ---(Fri Feb  7 10:45:44 2020)---
+from wafer_map import wm_app
+wm_app.WaferMapApp(data, 9,(1,1),(0,0),150)
+data = [(0,0, 1969.493), 
+        (0,95,2014.453),
+        (-67.1751,	67.1751,	1000),
+        (-95,	0,	2015.6959),
+        (-67.1751,	-67.1751,	2014.524),
+        (0	,-95,	2014.9785),
+        (67.1751,	-67.1751,	2041.684),
+        (95,	0,	2043.2437),
+        (67.1751,	67.1751,2041.6567)
+        ]
+wm_app.WaferMapApp(data, 9,(1,1),(0,0),150)
+wm_app.WaferMapApp(data, (9,9),(1,1),(0,0),150)
+wm_app.WaferMapApp(data, (1,1),(0,0),150)
+from wafer_map import wm_app
+data = [(0,0, 1969.493), 
+        (0,95,2014.453),
+        (-67.1751,	67.1751,	1000),
+        (-95,	0,	2015.6959),
+        (-67.1751,	-67.1751,	2014.524),
+        (0	,-95,	2014.9785),
+        (67.1751,	-67.1751,	2041.684),
+        (95,	0,	2043.2437),
+        (67.1751,	67.1751,2041.6567)
+        ]
+wm_app.WaferMapApp(data, (1,1),(0,0),150)
+import numpy
+data_1 = np.array([[ 0. ,  0. ,  1. ,  1. ,  0. ,  0. ],
+       [ 0. ,  1. ,  1. ,  1. ,  1. ,  0. ],
+       [ 1. ,  2. ,  0.1,  2. ,  2. ,  1. ],
+       [ 1. ,  2. ,  2. ,  0.1,  2. ,  1. ],
+       [ 0. ,  1. ,  1. ,  1. ,  1. ,  0. ],
+       [ 0. ,  0. ,  1. ,  1. ,  0. ,  0. ]])
+import numpy as np
+data_1 = np.array([[ 0. ,  0. ,  1. ,  1. ,  0. ,  0. ],
+       [ 0. ,  1. ,  1. ,  1. ,  1. ,  0. ],
+       [ 1. ,  2. ,  0.1,  2. ,  2. ,  1. ],
+       [ 1. ,  2. ,  2. ,  0.1,  2. ,  1. ],
+       [ 0. ,  1. ,  1. ,  1. ,  1. ,  0. ],
+       [ 0. ,  0. ,  1. ,  1. ,  0. ,  0. ]])
+plt.figure(1)
+import matplotlib
+plt.figure(1)
+import matplotlib as mpl
+import matplotlib.pylab as plt
+plt.figure(1)
+plt.imshow(data_1 ,interpolation='none')
+plt.colorbar()
+plt.figure(1)
+plt.colorbar()
+plt.imshow(data_1 ,interpolation='gaussian')

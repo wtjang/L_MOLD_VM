@@ -66,9 +66,11 @@ for k in range(0, len(file_list)):
     df_2 = df_1.loc[df_1['Recipe_Step_Number'] == 6]
      
     #뽑을 Factor들을 사전 정의 - based on domain knowledge
-    
     Gas_Input = ['Time', 'S1_NH3_FLOW','S1_SiH4_FLOW', 'S1_N2_FLOW', 'S1_Ar_Flow(Teos)', 
-                 'S1_P0_PRESS', 'S1_P1_PRESS', 'S1_VAT_Pressure', 'S1_VAT_Position','HF_FORWARD_A','HF_REFLECT_A']   
+                 'S1_P0_PRESS', 'S1_P1_PRESS', 'S1_VAT_Pressure', 'S1_VAT_Position','HF_FORWARD_A','HF_REFLECT_A']  
+    
+    #Gas_Input = ['Time', 'S1_NH3_FLOW','S1_SiH4_FLOW', 'S1_N2_FLOW', 'S1_Ar_Flow(Teos)', 
+    #              'S1_VAT_Pressure', 'HF_FORWARD_A','HF_REFLECT_A']   
     df_3 = df_2[Gas_Input]
     
     df_3['Delivery_Power'] = df_3['HF_FORWARD_A'] - df_3['HF_REFLECT_A']
@@ -147,6 +149,7 @@ for k in range(0, len(file_list)):
      
     #뽑을 Factor들을 사전 정의
     Temp_Input = ['Time', 'S1_CHUCK_POSITION', 'FORE_BARA_GAUGE','HEAT_EX_TEMP_A' ,'HF_R_A', 'HF_X_A' ]   
+    #Temp_Input = ['Time', 'S1_CHUCK_POSITION', 'HF_R_A', 'HF_X_A' ]   
     df_6 = df_5[Temp_Input]
     
     # Impedence 계산
@@ -248,7 +251,7 @@ rmse_val = []
 for K in range(20):
     K = K+1
     
-    model = sklearn.neighbors.KNeighborsRegressor(n_neighbors = K)
+    model = neighbors.KNeighborsRegressor(n_neighbors = K)
     
     model.fit(train_x, train_y)
     pred = model.predict(test_x)
