@@ -50,8 +50,8 @@ for k in range(0, len(file_list)):
     #col값을 numeric으로 변경하는데, numerice으로 변경 안되는건 NaN으로 변경
     #제일 마지막 칼럼 이름을 지정해줘야 하는데 (df.iloc[:,-1]).name 이걸로 인덱싱
     
-    df_1.Time = pd.to_datetime(df.Time) # 타입 변환
-    df_1['Time'] = pd.DataFrame({'Time' : df_1.Time})
+    df_1['Time'] = pd.to_datetime(df['Time']) # 타입 변환
+    df_1['Time'] = pd.DataFrame({'Time' : df_1['Time']})
     
     #Dataframe에서 col 순서 바꾸기(end col -> first col으로)
     cols = df_1.columns.tolist()
@@ -73,10 +73,16 @@ for k in range(0, len(file_list)):
     #              'S1_VAT_Pressure', 'HF_FORWARD_A','HF_REFLECT_A']   
     df_3 = df_2[Gas_Input]
     
-    df_3['Delivery_Power'] = df_3['HF_FORWARD_A'] - df_3['HF_REFLECT_A']
+    #df = pd.DataFrame(nums, columns=['NUM']) 사용 가능??
+    temp_dp = pd.DataFrame((df_3['HF_FORWARD_A'] - df_3['HF_REFLECT_A']),columns=['Delivery_Power'])
+    
+    
+    df_3 = pd.concat([df_3, temp_dp], axis = 1)
+           
     
     del df_3['HF_FORWARD_A']
     del df_3['HF_REFLECT_A']
+    del temp_dp
     
     # Factor들 이름만 가져옴
     answer = df_3.std().index 
@@ -137,8 +143,10 @@ for k in range(0, len(file_list)):
         df_temp.loc[i-12] = temp
     
     df_4 = df_temp.loc[:,'Recipe_Step_Number':(df_temp.iloc[:,-1]).name].apply(pd.to_numeric, errors = 'coerce')
-    df_4.Time = pd.to_datetime(df_temp.Time) # 타입 변환
-    df_4['Time'] = pd.DataFrame({'Time' : df_4.Time})
+        
+    
+    df_4['Time'] = pd.to_datetime(df_temp['Time']) # 타입 변환
+    df_4['Time'] = pd.DataFrame({'Time' : df_4['Time']})
         
     cols = df_4.columns.tolist()
     cols = cols[-1:] + cols[:-1]
@@ -156,10 +164,14 @@ for k in range(0, len(file_list)):
     # df_6['Impedence'] = sqrt(df_6['HF_R_A'] * df_6['HF_R_A'] + df_6['HF_X_A'] * df_6['HF_X_A']) 
     # sqrt 쓰면 cannot convert the series to <class 'float'> 오류남
     
-    df_6['Impedence'] = (df_6['HF_R_A'] * df_6['HF_R_A'] + df_6['HF_X_A'] * df_6['HF_X_A']) ** (1/2)
+    #df_6['Impedence'] = (df_6['HF_R_A'] * df_6['HF_R_A'] + df_6['HF_X_A'] * df_6['HF_X_A']) ** (1/2)
+    temp_imp = pd.DataFrame(((df_6['HF_R_A'] * df_6['HF_R_A'] + df_6['HF_X_A'] * df_6['HF_X_A']) ** (1/2)),columns=['Impedence'])
+        
+    df_6 = pd.concat([df_6, temp_imp], axis = 1)
     
     del df_6['HF_R_A']
     del df_6['HF_X_A']
+    del temp_imp
            
     # Factor들 이름만 가져옴
     answer = df_6.std().index 
@@ -245,6 +257,7 @@ test_x = pd.DataFrame(test_x_scaled)
 
 ##################### 3.1 KNN - Regression 알고리즘 적용 ####################
 # KNN-Regression
+import numpy as np
 
 rmse_val = []
 
@@ -260,6 +273,7 @@ for K in range(20):
     print('RMSE value for k = ' , K , 'is:', error)
 
 curve = pd.DataFrame(rmse_val)
+curve.index += 1
 curve.plot() # k에 따른 rmse 곡선
 
 # graph of acvtual vs pred value
@@ -267,7 +281,6 @@ curve.plot() # k에 따른 rmse 곡선
 plt.plot(test_y.values, 'ro-')
 plt.plot(pred, 'bo-')
 
-import numpy as np
 xs = np.arange(0,10,1)
 ys = test_y.values
 
@@ -293,6 +306,12 @@ for x, y in zip(xs, ys_1):
                  ha = 'center',
                  color = 'b')    
     
+from sklearn.metrics import mean_squared_error
+RMSE = mean_squared_error(ys,ys_1) ** 0.5
+MAPE = 100/len(ys)*sum(abs(ys-ys_1)/ys)
+    
+    
+'''    
 # plt.title("sin & cos") # 제목
 from matplotlib import pyplot
 from sklearn.model_selection import cross_val_score,KFold
@@ -303,8 +322,202 @@ from sklearn.grid_search import GridSearchCV   #Perforing grid search
 from scipy.stats import skew
 from collections import OrderedDict
 import csv as csv
+'''
+######################## 3.2 random forest ########################
 
-######################## 3.2 xgboosting 알고리즘 적용 ########################
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestRegressor
+
+#1. 기본 RF
+forest = RandomForestRegressor()
+forest.fit(train_x, train_y)
+
+pred_forest = forest.predict(test_x)
+
+plt.plot(test_y.values, 'ro-')
+plt.plot(pred_forest, 'bo-')
+
+xs = np.arange(0,10,1)
+ys = test_y.values
+ys_1 = pred_forest
+for x, y in zip(xs, ys):
+    label = "{:.2f}".format(y)
+    
+    plt.annotate(label,
+                 (x,y),
+                 textcoords = "offset points",
+                 xytext=(0,10),
+                 ha = 'center',
+                 color = 'r')
+for x, y in zip(xs, ys_1):
+    label = "{:.2f}".format(y)
+    
+    plt.annotate(label,
+                 (x,y),
+                 textcoords = "offset points",
+                 xytext=(0,10),
+                 ha = 'center',
+                 color = 'b')  
+
+RMSE = mean_squared_error(ys,ys_1) ** 0.5
+MAPE = 100/len(ys)*sum(abs(ys-ys_1)/ys)
+
+#2. 그리드 서치1
+
+from sklearn.model_selection import GridSearchCV
+# Create the parameter grid based on the results of random search 
+param_grid = {
+    'bootstrap': [True],
+    'max_depth': [80, 90, 100, 110],
+    'max_features': [2, 3],
+    'min_samples_leaf': [3, 4, 5],
+    'min_samples_split': [8, 10, 12],
+    'n_estimators': [100, 200, 300, 1000]
+}
+# Create a based model
+rf = RandomForestRegressor()
+# Instantiate the grid search model
+grid_search = GridSearchCV(estimator = rf, param_grid = param_grid, 
+                          cv = 3, n_jobs = 1, verbose = 2)
+grid_search.fit(train_x, train_y)
+
+'''
+{'bootstrap': True, 'max_depth': 100, 'max_features': 2, 'min_samples_leaf': 3, 'min_samples_split': 8, 'n_estimators': 100}
+'''
+model_1 = grid_search.best_estimator_
+
+pred_forest_grid_1 = model_1.predict(test_x)
+
+plt.plot(test_y.values, 'ro-')
+plt.plot(pred_forest_grid_1, 'bo-')
+
+xs = np.arange(0,10,1)
+ys = test_y.values
+ys_1 = pred_forest_grid_1
+
+for x, y in zip(xs, ys):
+    label = "{:.2f}".format(y)
+    
+    plt.annotate(label,
+                 (x,y),
+                 textcoords = "offset points",
+                 xytext=(0,10),
+                 ha = 'center',
+                 color = 'r')
+    
+for x, y in zip(xs, ys_1):
+    label = "{:.2f}".format(y)
+    
+    plt.annotate(label,
+                 (x,y),
+                 textcoords = "offset points",
+                 xytext=(0,10),
+                 ha = 'center',
+                 color = 'b')  
+
+RMSE = mean_squared_error(ys,ys_1) ** 0.5
+MAPE = 100/len(ys)*sum(abs(ys-ys_1)/ys)
+
+'''
+gridsearch 코어 수 때문에 많이 찾아보고 해봤는데 결국 성공한게 없음.. stackoverflow 다 뒤졌는데도 안댐... 걍 1로 잡고 해야댐..
+
+import time
+from math import sqrt
+from joblib import Parallel, delayed
+
+
+if __name__ == '__main__':
+
+    grid_search_2 = GridSearchCV(estimator = rf, param_grid = param_grid, 
+                          cv = 3, n_jobs = 10, verbose = 10)
+    start = time.time()  # 시작 시간 저장
+    grid_search_2.fit(train_x, train_y)
+    print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간
+    
+import numpy as np
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.externals.joblib  import Parallel, delayed
+class Test():
+   def __init__(self):
+       rf = RandomForestRegressor()
+       grid_search_2 = GridSearchCV(estimator = rf, param_grid = param_grid, 
+                          cv = 3, n_jobs = 10, verbose = 10)
+       grid_search_2.fit(train_x, train_y)
+                       
+if __name__ == '__main__':
+   Test()
+ '''
+
+#3. 그리드 서치2
+param_grid = {
+    'bootstrap': [True],
+    'max_depth': [80, 90, 100, 150, 200, 250, 300],
+    'max_features': [2, 5, 8, 11, 14, 17, 20],
+    'min_samples_leaf': [3, 4, 5, 6, 7, 8],
+    'min_samples_split': [8, 10, 12],
+    'n_estimators': [100, 200, 300, 500, 1000]
+}
+
+grid_search_2 = GridSearchCV(estimator = rf, param_grid = param_grid, 
+                          cv = 3, n_jobs = 1, verbose = 10)
+start = time.time()  # 시작 시간 저장
+grid_search_2.fit(train_x, train_y)
+print("time :", time.time() - start)  # 현재시각 - 시작시간 = 실행 시간
+'''
+[Parallel(n_jobs=1)]: Done 13230 out of 13230 | elapsed: 92.9min finished
+time : 5575.896084070206
+
+grid_search_2.best_params_
+'bootstrap': True, 'max_depth': 250, 'max_features': 2, 'min_samples_leaf': 4, 'min_samples_split': 8, 'n_estimators': 100}
+'''
+model_2 = grid_search_2.best_estimator_
+
+pred_forest_grid_2 = model_2.predict(test_x)
+
+plt.plot(test_y.values, 'ro-')
+plt.plot(pred_forest_grid_2, 'bo-')
+
+xs = np.arange(0,10,1)
+ys = test_y.values
+ys_1 = pred_forest_grid_2
+
+for x, y in zip(xs, ys):
+    label = "{:.2f}".format(y)
+    
+    plt.annotate(label,
+                 (x,y),
+                 textcoords = "offset points",
+                 xytext=(0,10),
+                 ha = 'center',
+                 color = 'r')
+    
+for x, y in zip(xs, ys_1):
+    label = "{:.2f}".format(y)
+    
+    plt.annotate(label,
+                 (x,y),
+                 textcoords = "offset points",
+                 xytext=(0,10),
+                 ha = 'center',
+                 color = 'b')  
+RMSE = mean_squared_error(ys,ys_1) ** 0.5
+MAPE = 100/len(ys)*sum(abs(ys-ys_1)/ys)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+######################## 3.3 xgboosting 알고리즘 적용 ########################
 
 # XG-Boosting
 # No module named 'xgboost' 계속 이거나옴 ㅅㅂ
