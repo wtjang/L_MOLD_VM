@@ -51480,3 +51480,2714 @@ for i in range(0, len(test_matching)):
 
 z_[143,0]
 z_[143,:]
+
+## ---(Mon May 25 09:54:54 2020)---
+point_109 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\new_109pt.xlsx', header = 0)
+import os
+import pandas as pd
+import numpy as np
+import matplotlib.pylab as plt 
+
+path_dir = r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일'
+file_list = os.listdir(path_dir)
+file_list.sort()
+
+f = open(path_dir +  '\\' +  file_list[3]) # 25p 가져오기
+
+lines = f.readlines()
+labels = lines[0].split(',') # line 0 : Factor  
+df = pd.DataFrame(columns = labels)
+
+for i in range(2, len(lines)):
+    temp = lines[i]
+    temp = temp.split(',')
+    
+    df.loc[i-2] = temp
+
+
+del df[df.iloc[:,-1].name] # 제일 마지막 빈 열 삭제
+df_Meta = df.loc[:, ['SLOT', 'LOT ID', 'COLLECTION DATE/TIME', 'RECIPE', 'MATERIAL']]
+df_Stat = df.loc[:, ['SLOT','RESULT TYPE', 'MEAN', 'MIN', 'MAX', '% STDDEV', 'STDDEV', '3 % STDDEV', '3 STDDEV', 'RANGE']]
+df_Point = df.loc[:, 'DATA[1]':(df.iloc[:,-1]).name]
+
+num_first_Wafer = int(df_Meta.loc[0,'SLOT']) 
+num_last_Wafer = int(df_Meta.loc[len(df_Meta)-1,'SLOT'])
+
+num_Wafer =num_last_Wafer - num_first_Wafer + 1
+num_Feature = len(df_Meta) / num_Wafer #1st Thickness, 1st RI @ 633.0nm, GOF 등의 개수
+
+df_Meta_final = pd.DataFrame(columns = df_Meta.columns)
+for k in range(0, num_Wafer):
+    df_Meta_final.loc[k] = df_Meta.loc[k*num_Feature]
+
+import os
+import pandas as pd
+import numpy as np
+import matplotlib.pylab as plt 
+point_109 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\new_109pt.xlsx', header = 0)
+
+point_109 = point_109[['X','Y','THK']]
+point_109 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\new_109.xlsx', header = 0)
+point_109 = point_109[['X','Y','THK']]
+data = {}
+
+for i in range(0, len(point_109)):
+    
+    data[int(point_109.iloc[i,0]),int(point_109.iloc[i,1])] = point_109.iloc[i,2]
+
+
+
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+import numpy as np
+from scipy.interpolate import Rbf
+%matplotlib inline
+import matplotlib.pyplot as plt
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+z_ = z_[0:286,]
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((143-i)**2 + (143-j)**2) > 143**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+cmap = plt.get_cmap('jet', 10)
+plt.imshow(z_, origin="lower", extent=extent,cmap = cmap)
+plt.colorbar() 
+point_109 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\new_109.xlsx', header = 0)
+
+point_109 = point_109[['X','Y','THK']]
+
+
+data = {}
+
+for i in range(0, len(point_109)):
+    
+    data[int(point_109.iloc[i,0]),int(point_109.iloc[i,1])] = point_109.iloc[i,2]
+
+
+
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+
+z_ = z_[0:286,]
+'''
+z_ = z_[0:572,]
+'''
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((143-i)**2 + (143-j)**2) > 143**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+import numpy as np
+from scipy.interpolate import Rbf
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+
+point_109 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\new_109.xlsx', header = 0)
+
+point_109 = point_109[['X','Y','THK']]
+
+
+data = {}
+
+for i in range(0, len(point_109)):
+    
+    data[int(point_109.iloc[i,0]),int(point_109.iloc[i,1])] = point_109.iloc[i,2]
+
+
+
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+
+z_ = z_[0:286,]
+'''
+z_ = z_[0:572,]
+'''
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((143-i)**2 + (143-j)**2) > 143**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+z_[143,143]
+import numpy as np
+from scipy.interpolate import Rbf
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+
+point_109 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\new_109.xlsx', header = 0)
+
+point_109 = point_109[['X','Y','THK']]
+
+
+data = {}
+
+for i in range(0, len(point_109)):
+    
+    data[int(point_109.iloc[i,0]),int(point_109.iloc[i,1])] = point_109.iloc[i,2]
+
+
+
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+
+z_ = z_[0:286,]
+'''
+z_ = z_[0:572,]
+'''
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((143-i)**2 + (143-j)**2) > 143**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+z_[143,143]
+import numpy as np
+from scipy.interpolate import Rbf
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+
+point_313 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\new_313.xlsx', header = 0)
+
+point_313 = point_109[['X','Y','THK']]
+data = {}
+
+for i in range(0, len(point_313)):
+    
+    data[int(point_313.iloc[i,0]),int(point_313.iloc[i,1])] = point_313.iloc[i,2]
+
+
+import numpy as np
+from scipy.interpolate import Rbf
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+
+point_313 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\new_313.xlsx', header = 0)
+
+point_313 = point_109[['X','Y','THK']]
+
+
+data = {}
+
+for i in range(0, len(point_313)):
+    
+    data[int(point_313.iloc[i,0]),int(point_313.iloc[i,1])] = point_313.iloc[i,2]
+
+len(point_313)
+import numpy as np
+from scipy.interpolate import Rbf
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+
+point_313 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\new_313.xlsx', header = 0)
+
+point_313 = point_313 [['X','Y','THK']]
+
+
+data = {}
+
+for i in range(0, len(point_313)):
+    
+    data[int(point_313.iloc[i,0]),int(point_313.iloc[i,1])] = point_313.iloc[i,2]
+
+point_313
+len(313
+)
+len(point_313)
+data = {}
+
+for i in range(0, len(point_313)):
+    
+    data[int(point_313.iloc[i,0]),int(point_313.iloc[i,1])] = point_313.iloc[i,2]
+
+
+
+import numpy as np
+from scipy.interpolate import Rbf
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+
+point_313 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\new_313.xlsx', header = 0)
+
+point_313 = point_313 [['X','Y','THK']]
+data = {}
+
+for i in range(0, len(point_313)):
+    
+    data[int(point_313.iloc[i,0]),int(point_313.iloc[i,1])] = point_313.iloc[i,2]
+
+
+
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+
+z_ = z_[0:286,]
+import numpy as np
+from scipy.interpolate import Rbf
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+
+point_313 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\new_313.xlsx', header = 0)
+
+point_313 = point_313 [['X','Y','THK']]
+
+
+data = {}
+len(point_313)
+for i in range(0, len(point_313)):
+    
+    data[int(point_313.iloc[i,0]),int(point_313.iloc[i,1])] = point_313.iloc[i,2]
+
+point_313.iloc[i,0]
+int(point_313.iloc[i,0])
+round(point_313.iloc[i,0])
+round(point_313.iloc[i,0],1)
+i=0
+round(point_313.iloc[i,0],1)
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+
+z_ = z_[0:286,]
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((147-i)**2 + (147-j)**2) > 147**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+cmap = plt.get_cmap('jet', 10)
+plt.imshow(z_, origin="lower", extent=extent,cmap = cmap)
+plt.colorbar() 
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+matching = matching.iloc[:,0:2]
+test_matching = matching.copy()
+test_matching["value"] = 0
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+
+matching = matching.iloc[:,0:2]
+
+
+test_matching = matching.copy()
+test_matching["value"] = 0
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+
+matching = matching.iloc[:,0:2]
+matching = matching.iloc[0:313,]
+matching = matching.iloc[:,0:2]
+matching = matching.iloc[0:313,]
+
+test_matching = matching.copy()
+test_matching["value"] = 0
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 147 - matching.iloc[i,1]
+    test_matching.iloc[i,1] = 147 + matching.iloc[i,0]
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[test_matching.iloc[i,0],test_matching.iloc[i,1]]
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
+import numpy as np
+from scipy.interpolate import Rbf
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+
+point_109 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\new_109.xlsx', header = 0)
+
+point_109 = point_109[['X','Y','THK']]
+
+
+data = {}
+
+for i in range(0, len(point_109)):
+    
+    data[int(point_109.iloc[i,0]),int(point_109.iloc[i,1])] = point_109.iloc[i,2]
+
+
+
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+
+z_ = z_[0:286,]
+'''
+z_ = z_[0:572,]
+'''
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((143-i)**2 + (143-j)**2) > 143**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+matching_2 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching_2.xlsx', header = 0)
+matching_2 = matching_2.iloc[:,0:2]
+test_matching_2 = matching_2.copy()
+test_matching_2["value"] = 0
+for i in range(0, len(matching_2)):
+    test_matching_2.iloc[i,0] = 147 - matching_2.iloc[i,1]
+    test_matching_2.iloc[i,1] = 147 + matching_2.iloc[i,0]
+
+for i in range(0, len(test_matching_2)):
+    if (test_matching_2.iloc[i,0] >= 0 ) & (test_matching_2.iloc[i,1] >= 0 ):
+        test_matching_2.loc[i,'value'] = z_[int(test_matching_2.iloc[i,0]),int(test_matching_2.iloc[i,1])]
+
+test_matching_2[0,0]
+test_matching_2[0,2]
+test_matching_2.loc[0,0]
+test_matching_2.iloc[0,0]
+test_matching_2.iloc[i,i]
+i=0
+test_matching_2.iloc[i,i]
+int(test_matching_2.iloc[i,i])
+int(test_matching_2.iloc[i,0])
+int(test_matching_2.iloc[i,1])
+int(test_matching_2.iloc[i,0])
+int(test_matching_2.iloc[i,1])
+test_matching.iloc[int(test_matching_2.iloc[i,0]), int(test_matching_2.iloc[i,1])]
+test_matching.loc[int(test_matching_2.iloc[i,0]), int(test_matching_2.iloc[i,1])]
+test_matching[int(test_matching_2.iloc[i,0]), int(test_matching_2.iloc[i,1])]
+int(test_matching_2.iloc[i,0])
+int(test_matching_2.iloc[i,1])
+matching.iloc[i,1]
+matching.iloc[i,3]
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 147 - int(matching.iloc[i,1])
+    test_matching.iloc[i,1] = 147 + int(matching.iloc[i,0])
+
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
+
+i
+i=0
+int(test_matching_2.iloc[i,0])
+int(test_matching_2.iloc[i,1])
+test_matching.iloc[int(test_matching_2.iloc[i,0]), int(test_matching_2.iloc[i,1])]
+test_matching.loc[int(test_matching_2.iloc[i,0]), int(test_matching_2.iloc[i,1])]
+test_matching[int(test_matching_2.iloc[i,0]), int(test_matching_2.iloc[i,1])]
+test_matching(int(test_matching_2.iloc[i,0]), int(test_matching_2.iloc[i,1]))
+int(test_matching_2.iloc[i,0])
+int(test_matching_2.iloc[i,1])
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+point_313 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\new_313.xlsx', header = 0)
+
+point_313 = point_313 [['X','Y','THK']]
+
+
+data = {}
+
+for i in range(0, len(point_313)):
+    
+    data[int(point_313.iloc[i,0]),int(point_313.iloc[i,1])] = point_313.iloc[i,2]
+
+
+
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((147-i)**2 + (147-j)**2) > 147**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+for i in range(0, len(test_matching_2)):
+    if (test_matching_2.iloc[i,0] >= 0 ) & (test_matching_2.iloc[i,1] >= 0 ):
+        test_matching_2.loc[i,'value'] = z_[int(test_matching_2.iloc[i,0]),int(test_matching_2.iloc[i,1])]
+
+import os
+import pandas as pd
+import numpy as np
+import matplotlib.pylab as plt 
+df = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\center.xlsx', header = 1)
+df = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\center.xlsx', header = 0)
+test = [random.choice(df) for i in range(30)]
+import random
+test = [random.choice(df) for i in range(30)]
+df.loc[:,1]
+df.iloc[:,1]
+df.loc[,1]
+df.loc[:,1]
+df.loc[:,'THK']
+type(df.loc[:,'THK'])
+temp = df.loc[:,'THK']
+random.choice(temp)
+random.choice(temp) for i in range(30)
+test = [random.choice(temp) for i in range(30)]
+for k in range(100):
+    test[k] = [random.choice(temp) for i in range(30)]
+
+for i in range(10):
+ setattr(mod, ‘var_{}’.format(i), i)
+
+import sys
+mod = sys.modules[__name__]
+for i in range(10):
+ setattr(mod, ‘var_{}’.format(i), i)
+
+for i in range(10):
+ setattr(mod, ‘var{}’.format(i), i)
+
+test
+type(test)
+output = pd.DataFrame(index=range(0,200))
+output[0,0]
+output.loc[0,0]
+output.iloc[0,0]
+output(0,0)
+output.loc[0,0]
+output.loc[0,1]
+output[0,1] = test
+output[1,1] = test
+mean([random.choice(temp) for i in range(30)])
+average([random.choice(temp) for i in range(30)])
+([random.choice(temp) for i in range(30)]).mean
+test
+test.mean
+mean(test)
+average(test)
+np.mean(test)
+np.mean([random.choice(temp) for i in range(30)])
+np.mean([random.choice(temp) for i in range(30)])[random.choice(temp) for i in range(30)]
+[random.choice(temp) for i in range(30)]
+np.mean([random.choice(temp) for i in range(30)])[random.choice(temp) for i in range(30)]
+np.mean([random.choice(temp) for i in range(30)])
+output = []
+for k in range(200):
+    output.insert(k, np.mean([random.choice(temp) for i in range(30)]))
+
+for k in range(300):
+    output.insert(k, np.mean([random.choice(temp) for i in range(40)]))
+
+output = []
+for k in range(300):
+    output.insert(k, np.mean([random.choice(temp) for i in range(40)]))
+
+df = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\center.xlsx', header = 0)
+temp = df.loc[:,'THK']
+
+output = []
+
+for k in range(300):
+    output.insert(k, np.mean([random.choice(temp) for i in range(40)]))
+
+output = []
+df = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\center.xlsx', header = 0)
+temp = df.loc[:,'THK']
+
+output = []
+
+for k in range(300):
+    output.insert(k, np.mean([random.choice(temp) for i in range(40)]))
+
+output = []
+df = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\center.xlsx', header = 0)
+temp = df.loc[:,'THK']
+
+output = []
+
+for k in range(300):
+    output.insert(k, np.mean([random.choice(temp) for i in range(40)]))
+
+import numpy as np
+from scipy.interpolate import Rbf
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+
+point_25 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\new_25.xlsx', header = 0)
+
+point_25 = point_25 [['X','Y','THK']]
+point_25 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\0528_25.xlsx', header = 0)
+point_25 = point_25 [['X','Y','THK']]
+data = {}
+
+for i in range(0, len(point_313)):
+    
+    data[int(point_25.iloc[i,0]),int(point_25.iloc[i,1])] = point_25.iloc[i,2]
+
+data = {}
+
+for i in range(0, len(point_25)):
+    
+    data[int(point_25.iloc[i,0]),int(point_25.iloc[i,1])] = point_25.iloc[i,2]
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((147-i)**2 + (147-j)**2) > 147**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+matching = matching.iloc[:,0:2]
+test_matching = matching.copy()
+test_matching["value"] = 0
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 147 - int(matching.iloc[i,1])
+    test_matching.iloc[i,1] = 147 + int(matching.iloc[i,0])
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+matching = matching.iloc[:,0:2]
+test_matching = matching.copy()
+test_matching["value"] = 0
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 147 - int(matching.iloc[i,1])
+    test_matching.iloc[i,1] = 147 + int(matching.iloc[i,0])
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
+import numpy as np
+from scipy.interpolate import Rbf
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+
+point_73 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\0528_73.xlsx', header = 0)
+
+point_73 = point_73 [['X','Y','THK']]
+
+
+data = {}
+
+for i in range(0, len(point_73)):
+    
+    data[int(point_73.iloc[i,0]),int(point_73.iloc[i,1])] = point_73.iloc[i,2]
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((148-i)**2 + (148-j)**2) > 148**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan     
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+point_73 = point_73[0:49,]
+point_73 = point_73[0:49,:]
+point_73 = point_73.loc[0:49,]
+point_73 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\0528_73.xlsx', header = 0)
+
+point_73 = point_73 [['X','Y','THK']]
+point_73 = point_73.loc[0:48,]
+data = {}
+
+for i in range(0, len(point_73)):
+    
+    data[int(point_73.iloc[i,0]),int(point_73.iloc[i,1])] = point_73.iloc[i,2]
+
+
+
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((148-i)**2 + (148-j)**2) > 148**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+cmap = plt.get_cmap('jet', 10)
+plt.imshow(z_, origin="lower", extent=extent,cmap = cmap)
+plt.colorbar() 
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+
+matching = matching.iloc[:,0:2]
+#matching = matching.iloc[0:313,]
+
+test_matching = matching.copy()
+test_matching["value"] = 0
+
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 147 - int(matching.iloc[i,1])
+    test_matching.iloc[i,1] = 147 + int(matching.iloc[i,0])
+
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
+import numpy as np
+from scipy.interpolate import Rbf
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+
+point_73 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\0528_313.xlsx', header = 0)
+
+point_73 = point_73 [['X','Y','THK']]
+point_73 = point_73.loc[0:120,]
+import numpy as np
+from scipy.interpolate import Rbf
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+
+point_313 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\0528_313.xlsx', header = 0)
+
+point_313 = point_313 [['X','Y','THK']]
+point_313 = point_313.loc[0:120,]
+
+data = {}
+
+for i in range(0, len(point_313)):
+    
+    data[int(point_313.iloc[i,0]),int(point_313.iloc[i,1])] = point_313.iloc[i,2]
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+
+#z_ = z_[0:286,]
+'''
+z_ = z_[0:572,]
+'''
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((148-i)**2 + (148-j)**2) > 148**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+point_313 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\0528_313.xlsx', header = 0)
+
+point_313 = point_313 [['X','Y','THK']]
+point_313 = point_313.loc[0:216,]
+
+data = {}
+
+for i in range(0, len(point_313)):
+    
+    data[int(point_313.iloc[i,0]),int(point_313.iloc[i,1])] = point_313.iloc[i,2]
+
+
+
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+
+#z_ = z_[0:286,]
+'''
+z_ = z_[0:572,]
+'''
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((148-i)**2 + (148-j)**2) > 148**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan  
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((143-i)**2 + (143-j)**2) > 143**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+
+matching = matching.iloc[:,0:2]
+#matching = matching.iloc[0:313,]
+
+test_matching = matching.copy()
+test_matching["value"] = 0
+
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 147 - int(matching.iloc[i,1])
+    test_matching.iloc[i,1] = 147 + int(matching.iloc[i,0])
+
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
+import numpy as np
+from scipy.interpolate import Rbf
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+
+point_25 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\0528_25.xlsx', header = 0)
+
+point_25 = point_25 [['X','Y','THK']]
+
+
+data = {}
+for i in range(0, len(point_25)):
+    
+    data[int(point_25.iloc[i,0]),int(point_25.iloc[i,1])] = point_25.iloc[i,2]
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+point_25 = point_25[0:12,]
+point_25 = point_25.loc[0:12,]
+point_25 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\0528_25.xlsx', header = 0)
+
+point_25 = point_25 [['X','Y','THK']]
+point_25 = point_25.loc[0:12,]
+
+data = {}
+
+for i in range(0, len(point_25)):
+    
+    data[int(point_25.iloc[i,0]),int(point_25.iloc[i,1])] = point_25.iloc[i,2]
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((98-i)**2 + (98-j)**2) > 98**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+
+matching = matching.iloc[:,0:2]
+#matching = matching.iloc[0:313,]
+
+test_matching = matching.copy()
+test_matching["value"] = 0
+
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 147 - int(matching.iloc[i,1])
+    test_matching.iloc[i,1] = 147 + int(matching.iloc[i,0])
+
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+
+matching = matching.iloc[:,0:2]
+#matching = matching.iloc[0:313,]
+
+test_matching = matching.copy()
+test_matching["value"] = 0
+
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 98 - int(matching.iloc[i,1])
+    test_matching.iloc[i,1] = 98 + int(matching.iloc[i,0])
+
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
+import numpy as np
+from scipy.interpolate import Rbf
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+
+point_136 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\new_136.xlsx', header = 0)
+
+point_136 = point_136 [['X','Y','THK']]
+data = {}
+
+for i in range(0, len(point_136)):
+    
+    data[int(point_136.iloc[i,0]),int(point_136.iloc[i,1])] = point_136.iloc[i,2]
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+z_ = z_[0:288,]
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((143-i)**2 + (143-j)**2) > 143**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar()
+point_76 = point_136.loc[0:75,]
+point_76 = point_136.loc[0:76,]
+data = {}
+
+for i in range(0, len(point_76)):
+    
+    data[int(point_76.iloc[i,0]),int(point_76.iloc[i,1])] = point_76.iloc[i,2]
+
+
+
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+z_ = z_[0:272,]
+z_ = z_[,0:272]
+z_ = z_[0:272,0:272]
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((136-i)**2 + (136-j)**2) > 136**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+
+matching = matching.iloc[:,0:2]
+test_matching = matching.copy()
+test_matching["value"] = 0
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 136 - int(matching.iloc[i,1])
+    test_matching.iloc[i,1] = 136 + int(matching.iloc[i,0])
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+test_matching = matching.copy()
+test_matching["value"] = 0
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 136 - int(matching.iloc[i,1])
+    test_matching.iloc[i,1] = 136 + int(matching.iloc[i,0])
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
+
+
+
+data = {}
+
+for i in range(0, len(point_313)):
+    
+    data[int(point_313.iloc[i,0]),int(point_313.iloc[i,1])] = point_313.iloc[i,2]
+
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((143-i)**2 + (143-j)**2) > 143**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+test_matching = matching.copy()
+test_matching["value"] = 0
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 143 - int(matching.iloc[i,1])
+    test_matching.iloc[i,1] = 143 + int(matching.iloc[i,0])
+
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
+import numpy as np
+from scipy.interpolate import Rbf
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+
+point_313 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\0528_313.xlsx', header = 0)
+
+point_313 = point_313 [['X','Y','THK']]
+point_313 = point_313.loc[0:216,]
+data = {}
+
+for i in range(0, len(point_313)):
+    
+    data[int(point_313.iloc[i,0]),int(point_313.iloc[i,1])] = point_313.iloc[i,2]
+
+
+
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+# Make an n-dimensional interpolator.
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((143-i)**2 + (143-j)**2) > 143**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+
+matching = matching.iloc[:,0:2]
+#matching = matching.iloc[0:313,]
+
+test_matching = matching.copy()
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 143 - int(matching.iloc[i,1])
+    test_matching.iloc[i,1] = 143 + int(matching.iloc[i,0])
+
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
+import os
+import pandas as pd
+import numpy as np
+import matplotlib.pylab as plt 
+
+path_dir = r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일'
+file_list = os.listdir(path_dir)
+file_list.sort()
+file_list
+f = open(path_dir +  '\\' +  file_list[8]) # 25p 가져오기
+file_list{8]
+file_list[8]
+f = open(path_dir +  '\\' +  file_list[8]) # 25p 가져오기
+
+lines = f.readlines()
+labels = lines[0].split(',') # line 0 : Factor  
+df = pd.DataFrame(columns = labels)
+
+for i in range(2, len(lines)):
+    temp = lines[i]
+    temp = temp.split(',')
+    
+    df.loc[i-2] = temp
+
+
+del df[df.iloc[:,-1].name] # 제일 마지막 빈 열 삭제
+df_Meta = df.loc[:, ['SLOT', 'LOT ID', 'COLLECTION DATE/TIME', 'RECIPE', 'MATERIAL']]
+df_Stat = df.loc[:, ['SLOT','RESULT TYPE', 'MEAN', 'MIN', 'MAX', '% STDDEV', 'STDDEV', '3 % STDDEV', '3 STDDEV', 'RANGE']]
+df_Point = df.loc[:, 'DATA[1]':(df.iloc[:,-1]).name]
+
+num_first_Wafer = int(df_Meta.loc[0,'SLOT']) 
+num_last_Wafer = int(df_Meta.loc[len(df_Meta)-1,'SLOT'])
+
+num_Wafer =num_last_Wafer - num_first_Wafer + 1
+num_Feature = len(df_Meta) / num_Wafer #1st Thickness, 1st RI @ 633.0nm, GOF 등의 개수
+
+df_Meta_final = pd.DataFrame(columns = df_Meta.columns)
+for k in range(0, num_Wafer):
+    df_Meta_final.loc[k] = df_Meta.loc[k*num_Feature]
+
+df_Point_dict={}
+for i in range(num_first_Wafer, num_last_Wafer+1):
+    df_Point_dict[i] = df_Point.loc[num_Feature*(i-num_first_Wafer):(num_Feature*(i-num_first_Wafer+1))-1,]
+
+
+
+
+
+'''
+dict에 최종형태로 들어감 x,y,feature col 형태로 삽입
+df_Point_finial_dict에 접근하면 됨. df_Point_finail_dict[10] : 10번 Wafer로 접근해서 Dataframe 가져온다
+
+Series to list : values.tolist())
+
+df_10_final = pd.DataFrame(columns = ['X','Y'] + (df_Stat.loc[0:num_Feature-1,'RESULT TYPE']).values.tolist())
+df_10_T = df_10.T
+
+for point_num in range(0,int(len(df_Point.columns)/3)):
+    df_10_final.loc[point_num,'X'] = df_10_T.iloc[3*point_num+1,0]
+    df_10_final.loc[point_num,'Y'] = df_10_T.iloc[3*point_num+2,0]
+    df_10_final.loc[point_num,(df_Stat.loc[0:num_Feature-1,'RESULT TYPE']).values.tolist()] = df_10_T.iloc[3*point_num,].values.tolist()
+
+'''
+df_Point_finial_dict = {}
+
+for i in range(num_first_Wafer, num_last_Wafer+1):
+    
+    df_Point_finial_dict[i] = pd.DataFrame(columns = ['X','Y'] + (df_Stat.loc[0:num_Feature-1,'RESULT TYPE']).values.tolist()) 
+    temp = df_Point_dict[i].T
+    
+    for point_num in range(0,int(len(df_Point.columns)/3)):
+        df_Point_finial_dict[i].loc[point_num,'X'] = temp.iloc[3*point_num+1,0]
+        df_Point_finial_dict[i].loc[point_num,'Y'] = temp.iloc[3*point_num+2,0]
+        df_Point_finial_dict[i].loc[point_num,(df_Stat.loc[0:num_Feature-1,'RESULT TYPE']).values.tolist()] = temp.iloc[3*point_num,].values.tolist()
+    
+    temp = None
+
+temp_73point = df_Point_finial_dict[20]
+temp_73point = temp_73point.loc[:,'X':(temp_73point.iloc[:,-1]).name].apply(pd.to_numeric, errors = 'coerce')
+temp_1_25point = temp_73point.loc[0:24,:]
+temp_26_49point = temp_73point.loc[25:48,:]
+temp_50_73point = temp_73point.loc[49:72,:]
+orginal_r = 147
+delta_r = 30
+
+import math
+temp_data = temp_26_49point
+for i in range(25,25+len(temp_26_49point)):
+    if (int(temp_26_49point.loc[i,'X']) == 0) | (int(temp_26_49point.loc[i,'Y']) == 0):
+        
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] + delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] + delta_r
+    
+    else:
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+
+temp_26_49point = temp_data
+temp_ring = pd.concat([temp_1_25point,temp_26_49point, temp_50_73point], axis = 0)
+data = {}
+
+for i in range(0, len(temp_ring)):
+    
+    data[int(temp_ring.iloc[i,0]),int(temp_ring.iloc[i,1])] = temp_ring.iloc[i,2]
+
+
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+rbfi = Rbf(x, y, z)
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((147-i)**2 + (147-j)**2) > 147**2:
+            z_[i,j] = 0
+
+
+
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((147-i)**2 + (147-j)**2) < 117**2:
+            z_[i,j] = 0       
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+
+cmap = plt.get_cmap('jet', 10)
+plt.imshow(z_, origin="lower", extent=extent,cmap = cmap)
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+test_1 = point_136.loc[47:76,:]
+test_2 = point_136.loc[77:106,:]
+test_3 = point_136.loc[107:136,:]
+temp_data = test_1.copy()
+temp_26_49point = temp_data.copy()
+orginal_r = 147
+delta_r = 15
+for i in range(25,25+len(temp_26_49point)):
+    if (int(temp_26_49point.loc[i,'X']) == 0) | (int(temp_26_49point.loc[i,'Y']) == 0):
+        
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] + delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] + delta_r
+    
+    else:
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+
+for i in range(25,25+len(temp_26_49point)):
+    if (int(temp_26_49point.loc[i,'X']) == 0) | (int(temp_26_49point.loc[i,'Y']) == 0):
+        
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] + delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] + delta_r
+    
+    else:
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+
+for i in range(47,47+len(temp_26_49point)):
+    if (int(temp_26_49point.loc[i,'X']) == 0) | (int(temp_26_49point.loc[i,'Y']) == 0):
+        
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] + delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] + delta_r
+    
+    else:
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+
+test_1_1 = temp_data
+temp_data = test_2.copy()
+temp_26_49point = temp_data.copy()
+for i in range(77,77+len(temp_26_49point)):
+    if (int(temp_26_49point.loc[i,'X']) == 0) | (int(temp_26_49point.loc[i,'Y']) == 0):
+        
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] + delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] + delta_r
+    
+    else:
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+
+test_2_2 = temp_data
+temp_ring = pd.concat([test_1_1,test_2_2, test_3], axis = 0)
+data = {}
+
+for i in range(0, len(temp_ring)):
+    
+    data[int(temp_ring.iloc[i,0]),int(temp_ring.iloc[i,1])] = temp_ring.iloc[i,2]
+
+
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+rbfi = Rbf(x, y, z)
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((147-i)**2 + (147-j)**2) > 147**2:
+            z_[i,j] = 0
+
+
+
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((147-i)**2 + (147-j)**2) < 117**2:
+            z_[i,j] = 0       
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+cmap = plt.get_cmap('jet', 10)
+plt.imshow(z_, origin="lower", extent=extent,cmap = cmap)
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+cmap = plt.get_cmap('jet', 10)
+plt.imshow(z_, origin="lower", extent=extent,cmap = cmap)
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+test_matching = matching.copy()
+test_matching["value"] = 0
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 147 - int(matching.iloc[i,1])
+    test_matching.iloc[i,1] = 147 + int(matching.iloc[i,0])
+
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
+import numpy as np
+from scipy.interpolate import Rbf
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+
+point_313 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\0528_313.xlsx', header = 0)
+test_1 = point_313.loc[121:168,:]
+test_2 = point_313.loc[169:216,:]
+test_3 = point_313.loc[217:264,:]
+test_4 = point_313.loc[265:312,:]
+orginal_r = 147
+delta_r = 10
+import math
+temp_data = test_1.copy()
+temp_26_49point = temp_data.copy()
+
+for i in range(77,77+len(temp_26_49point)):
+    if (int(temp_26_49point.loc[i,'X']) == 0) | (int(temp_26_49point.loc[i,'Y']) == 0):
+        
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] + delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] + delta_r
+    
+    else:
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+
+for i in range(121,121+len(temp_26_49point)):
+    if (int(temp_26_49point.loc[i,'X']) == 0) | (int(temp_26_49point.loc[i,'Y']) == 0):
+        
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] + delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] + delta_r
+    
+    else:
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+
+test_1_1 = temp_data
+temp_data = test_2.copy()
+temp_26_49point = temp_data.copy()
+for i in range(169,169+len(temp_26_49point)):
+    if (int(temp_26_49point.loc[i,'X']) == 0) | (int(temp_26_49point.loc[i,'Y']) == 0):
+        
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] + delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] + delta_r
+    
+    else:
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+
+test_2_2 = temp_data
+import math
+temp_data = test_3.copy()
+temp_26_49point = temp_data.copy()
+for i in range(217,217+len(temp_26_49point)):
+    if (int(temp_26_49point.loc[i,'X']) == 0) | (int(temp_26_49point.loc[i,'Y']) == 0):
+        
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] + delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] + delta_r
+    
+    else:
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+
+test_3_3 = temp_data
+temp_ring = pd.concat([test_1_1,test_2_2, test_3_3, test_4], axis = 0)
+data = {}
+
+for i in range(0, len(temp_ring)):
+    
+    data[int(temp_ring.iloc[i,0]),int(temp_ring.iloc[i,1])] = temp_ring.iloc[i,2]
+
+
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+rbfi = Rbf(x, y, z)
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((147-i)**2 + (147-j)**2) > 147**2:
+            z_[i,j] = 0
+
+
+
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((147-i)**2 + (147-j)**2) < 117**2:
+            z_[i,j] = 0       
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+
+matching = matching.iloc[:,0:2]
+#matching = matching.iloc[0:313,]
+
+test_matching = matching.copy()
+test_matching["value"] = 0
+
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 147 - int(matching.iloc[i,1])
+    test_matching.iloc[i,1] = 147 + int(matching.iloc[i,0])
+
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
+cmap = plt.get_cmap('jet', 10)
+plt.imshow(z_, origin="lower", extent=extent,cmap = cmap)
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+test_matching = matching.copy()
+test_matching["value"] = 0
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 147 - int(matching.iloc[i,1])
+    test_matching.iloc[i,1] = 147 + int(matching.iloc[i,0])
+
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
+import numpy as np
+from scipy.interpolate import Rbf
+%matplotlib inline
+import matplotlib.pyplot as plt
+
+
+point_161 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\new_161.xlsx', header = 0)
+
+point_161 = point_161 [['X','Y','THK']]
+point_161 = point_161.loc[0:86,]
+point_161 = point_161.loc[0:85,]
+data = {}
+
+for i in range(0, len(point_161)):
+    
+    data[int(point_161.iloc[i,0]),int(point_161.iloc[i,1])] = point_161.iloc[i,2]
+
+
+
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+# Make the grid.
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+rbfi = Rbf(x, y, z)
+
+# Predict on the regular grid.
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((136-i)**2 + (136-j)**2) > 136**2:
+            z_[i,j] = 0
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+test_matching = matching.copy()
+test_matching["value"] = 0
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 136 - int(matching.iloc[i,1])
+    test_matching.iloc[i,1] = 136 + int(matching.iloc[i,0])
+
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
+point_161 = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\new_161.xlsx', header = 0)
+
+point_161 = point_161 [['X','Y','THK']]
+test_1 = point_313.loc[61:85,:]
+test_2 = point_313.loc[86:110,:]
+test_3 = point_313.loc[111:137,:]
+test_4 = point_313.loc[138:160,:]
+import math
+temp_data = test_1.copy()
+temp_26_49point = temp_data.copy()
+
+for i in range(61,61+len(temp_26_49point)):
+    if (int(temp_26_49point.loc[i,'X']) == 0) | (int(temp_26_49point.loc[i,'Y']) == 0):
+        
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] + delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] + delta_r
+    
+    else:
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+
+test_1_1 = temp_data
+test_1 = point_161.loc[61:85,:]
+test_2 = point_161.loc[86:110,:]
+test_3 = point_161.loc[111:137,:]
+test_4 = point_161.loc[138:160,:]
+import math
+temp_data = test_1.copy()
+temp_26_49point = temp_data.copy()
+
+for i in range(61,61+len(temp_26_49point)):
+    if (int(temp_26_49point.loc[i,'X']) == 0) | (int(temp_26_49point.loc[i,'Y']) == 0):
+        
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] + delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] + delta_r
+    
+    else:
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+
+
+
+test_1_1 = temp_data
+for i in range(86,86+len(temp_26_49point)):
+    if (int(temp_26_49point.loc[i,'X']) == 0) | (int(temp_26_49point.loc[i,'Y']) == 0):
+        
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] + delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] + delta_r
+    
+    else:
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+
+test_2_2 = temp_data
+orginal_r = 147
+delta_r = 10
+
+import math
+temp_data = test_2.copy()
+temp_26_49point = temp_data.copy()
+for i in range(86,86+len(temp_26_49point)):
+    if (int(temp_26_49point.loc[i,'X']) == 0) | (int(temp_26_49point.loc[i,'Y']) == 0):
+        
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] + delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] + delta_r
+    
+    else:
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+
+test_2_2 = temp_data
+import math
+temp_data = test_3.copy()
+temp_26_49point = temp_data.copy()
+
+for i in range(111,111+len(temp_26_49point)):
+    if (int(temp_26_49point.loc[i,'X']) == 0) | (int(temp_26_49point.loc[i,'Y']) == 0):
+        
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] + delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] + delta_r
+    
+    else:
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+
+test_3_3 = temp_data
+temp_ring = pd.concat([test_1_1,test_2_2, test_3_3, test_4], axis = 0)
+for i in range(0, len(temp_ring)):
+    
+    data[int(temp_ring.iloc[i,0]),int(temp_ring.iloc[i,1])] = temp_ring.iloc[i,2]
+
+
+
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+rbfi = Rbf(x, y, z)
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((147-i)**2 + (147-j)**2) > 147**2:
+            z_[i,j] = 0
+
+
+
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((147-i)**2 + (147-j)**2) < 117**2:
+            z_[i,j] = 0       
+
+
+z_[z_ == 0] = np.nan      
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+z_ = z_.iloc[0:287,:]
+z_ = z_.loc[0:287,:]
+z_ = z_[0:287,:]
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+rbfi = Rbf(x, y, z)
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((147-i)**2 + (147-j)**2) > 147**2:
+            z_[i,j] = 0
+
+
+
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((147-i)**2 + (147-j)**2) < 117**2:
+            z_[i,j] = 0       
+
+
+z_[z_ == 0] = np.nan     
+
+
+z_ = z_[0:287,:]
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+rbfi = Rbf(x, y, z)
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((147-i)**2 + (147-j)**2) > 147**2:
+            z_[i,j] = 0
+
+
+
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((117-i)**2 + (117-j)**2) < 117**2:
+            z_[i,j] = 0       
+
+
+z_[z_ == 0] = np.nan     
+
+
+z_ = z_[0:287,:]
+
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+x = np.array([k[0] for k in data.keys()])
+y = np.array([k[1] for k in data.keys()])
+z = np.array([v for v in data.values()])
+
+minx, maxx = np.amin(x), np.amax(x)
+miny, maxy = np.amin(y), np.amax(y)
+extent = (minx, maxx, miny, maxy)
+grid_y, grid_x = np.mgrid[miny:maxy:1, minx:maxx:1]
+
+rbfi = Rbf(x, y, z)
+z_ = rbfi(grid_x, grid_y) #뒤집어!
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((147-i)**2 + (147-j)**2) > 147**2:
+            z_[i,j] = 0
+
+
+
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((147-i)**2 + (147-j)**2) < 117**2:
+            z_[i,j] = 0  
+
+len(z_)
+z_ = z_[0:287,:]
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((147-i)**2 + (147-j)**2) > 147**2:
+            z_[i,j] = 0
+
+
+
+for i in range(0,len(z_)):
+    for j in range(0,len(z_)):
+        if ((147-i)**2 + (147-j)**2) < 117**2:
+            z_[i,j] = 0       
+
+
+z_[z_ == 0] = np.nan     
+plt.imshow(z_, origin="lower", extent=extent,cmap = 'gist_rainbow_r')
+plt.colorbar() 
+plt.scatter(x, y, s=20, c='black')
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+matching = matching.iloc[:,0:2]
+#matching = matching.iloc[0:313,]
+
+test_matching = matching.copy()
+test_matching["value"] = 0
+
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 147 - int(matching.iloc[i,1])
+    test_matching.iloc[i,1] = 147 + int(matching.iloc[i,0])
+
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+orginal_r = 148
+delta_r = 10
+
+import math
+temp_data = matching.copy()
+temp_26_49point = temp_data.copy()
+for i in range(0,0+len(temp_26_49point)):
+    if (int(temp_26_49point.loc[i,'X']) == 0) | (int(temp_26_49point.loc[i,'Y']) == 0):
+        
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] - delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) == 0):
+            temp_data.loc[i,'X'] = temp_26_49point.loc[i,'X'] + delta_r
+        
+        elif (int(temp_26_49point.loc[i,'X']) == 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            temp_data.loc[i,'Y'] = temp_26_49point.loc[i,'Y'] + delta_r
+    
+    else:
+        if (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) > 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) < 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = -x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+        
+        elif (int(temp_26_49point.loc[i,'X']) > 0) & (int(temp_26_49point.loc[i,'Y']) < 0):
+            x1 =  ((orginal_r-delta_r)**2/(1+(abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))**2))**0.5
+            y1 = (abs(temp_26_49point.loc[i,'Y']/temp_26_49point.loc[i,'X']))*x1
+            
+            temp_data.loc[i,'X'] = x1
+            temp_data.loc[i,'Y'] = -y1
+            
+            del x1, y1
+
+test_matching = temp_data.copy()
+test_matching["value"] = 0
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 148 - int(matching.iloc[i,1])
+    test_matching.iloc[i,1] = 148 + int(matching.iloc[i,0])
+
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
+z_[179,286]
+z_[258,59]
+z_[60,36]
+z_[276,207]
+z_[276,88]
+z_[137,287]
+z_[137,290]
+z_[137,285]
+z_[137,5]
+z_[240,258]
+z_[9,110]
+z_[164,291]
+z_[164,285]
+z_[61,262]
+z_[236,34]
+z_[236,262]
+z_[164,5]
+z_[61,34]
+z_[99,283]
+z_[99,13]
+z_[4,161]
+z_[293,160]
+z_[287,160]
+z_[286,160]
+z_[278,81]
+matching = pd.read_excel(r'C:\Users\wtjang\Desktop\프로젝트\20200207 Wafer map\계측 파일\matching.xlsx', header = 0)
+test_matching = matching.copy()
+test_matching["value"] = 0
+for i in range(0, len(matching)):
+    test_matching.iloc[i,0] = 147 - int(matching.iloc[i,1])
+    test_matching.iloc[i,1] = 147 + int(matching.iloc[i,0])
+
+
+for i in range(0, len(test_matching)):
+    if (test_matching.iloc[i,0] >= 0 ) & (test_matching.iloc[i,1] >= 0 ):
+        test_matching.loc[i,'value'] = z_[int(test_matching.iloc[i,0]),int(test_matching.iloc[i,1])]
+
